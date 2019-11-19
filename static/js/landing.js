@@ -209,7 +209,7 @@
 
     aboutText
       .append("p")
-      .text("Here's where we'll brag on ourselves a little bit (or a lot).")
+      .text("Here's where we'll brag on ourselves a little bit (or a lot!).")
       .style("opacity", "0")
       .transition()
       .duration(textDuration)
