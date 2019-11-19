@@ -1,0 +1,28 @@
+/* general styles */
+/* font */
+h1 {
+  font-size: 3vw;
+}
+
+#welcomeGroup {
+  color: magenta;
+  fill: whitesmoke;
+}
+
+#mthdGroup {
+  color: navy;
+  fill: whitesmoke;
+}
+
+#legendGroup {
+  color: darkgreen;
+  fill: whitesmoke;
+}
+
+#universeGroup div {
+  fill: slategray;
+}
+
+#aboutGroup {
+  color: darkcyan;
+}
