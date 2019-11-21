@@ -6,16 +6,21 @@
   const headerDuration = 500;
   const textDuration = 1500;
 
-  let data = [];
+  let allSongs = [];
   let windowHeight = [];
   let windowWidth = [];
   let stepHeight = [];
   let stepWidth = [];
 
-  // d3.json().then(
-  init();
-  console.log(step);
-  // );
+  d3.json("/load_data", d => {
+    allSongs = d["songs"];
+    return allSongs;
+  })
+    .then(allSongs => {
+      allSongs = allSongs["songs"];
+      init(allSongs);
+    })
+    .catch(err => console.error(err));
 
   function handleResize() {
     const windowWidth = +window.innerWidth;
@@ -36,7 +41,7 @@
     scroller.resize();
   }
 
-  function buildSections() {
+  function buildSections(allSongs) {
     chartSpace
       .append("div")
       .attr("id", "welcomeGroup")
@@ -162,34 +167,20 @@
       .style("opacity", "1");
   }
 
-  function universe() {
+  function universe(allSongs) {
     chartSpace.selectAll("#legendText").remove();
     chartSpace.selectAll("#aboutText").remove();
     chartSpace.selectAll("#universeText").remove();
-
-    let universeText = d3
-      .selectAll("#universeGroup")
-      .append("g")
-      .attr("id", "universeText")
-      .style("transform", `translate(0,${windowHeight / 2}px)`);
-
-    universeText
-      .append("h1")
-      .text("AudioForma Universe")
-      .style("opacity", "0")
-      .transition()
-      .duration(headerDuration)
-      .style("opacity", "1");
-
-    universeText
-      .append("p")
-      .text(
-        "Here's where we'll let the users navigate the universe of data we've prepared :)."
-      )
-      .style("opacity", "0")
-      .transition()
-      .duration(textDuration)
-      .style("opacity", "1");
+    console.log(allSongs);
+    let songs = d3
+      .select("#universeGroup")
+      .selectAll("text")
+      .data(allSongs)
+      .enter()
+      .append("text")
+      .text(d => {
+        return `${d["song_title"]}, by ${d["artist"]}`;
+      });
   }
 
   function about() {
@@ -218,6 +209,8 @@
 
   function handleStepEnter(response) {
     // response = { element, direction, index }
+    let data = allSongs;
+    console.log(data);
     switch (response.index) {
       case 0: // welcome
         console.log("welcome");
@@ -233,7 +226,7 @@
         break; // universe viz
       case 3:
         console.log("universe");
-        universe();
+        universe(data);
         break;
       case 4:
         console.log("about");
@@ -248,13 +241,12 @@
     });
   }
 
-  function init() {
+  function init(allSongs) {
     setupStickyfill();
-
     // 1. force a resize on load to ensure proper dimensions are sent to scrollama
     handleResize();
 
-    buildSections();
+    buildSections(allSongs);
 
     // 2. setup the scroller passing options
     // this will also initialize trigger observations
@@ -264,7 +256,7 @@
         graphic: ".scroll__graphic",
         text: ".scroll__text",
         step: ".step",
-        debug: true
+        debug: false
       })
       // 3. bind scrollama event handlers (this can be chained like below)
       .onStepEnter(handleStepEnter);
