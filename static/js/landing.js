@@ -216,7 +216,7 @@
 
   function init() {
     setupStickyfill();
-    // 1. force a resize on load to ensure proper dimensions are sent to scrollama
+    // 1. force a resize on  to ensure proper dimensions are sent to scrollama
     handleResize();
 
     buildSections();

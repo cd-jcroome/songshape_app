@@ -1,15 +1,15 @@
 from flask import Flask, flash, render_template, request, url_for, redirect, jsonify, session 
 from models import db, Song
 import requests
-# from flask_heroku import Heroku
+from flask_heroku import Heroku
 
 app = Flask(__name__)
 
 app.secret_key = "audioForma"
 
 # local postgresql or heroku postgresql 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/audioforma'
-# heroku = Heroku(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/audioforma'
+heroku = Heroku(app)
 
 db.init_app(app)
 
