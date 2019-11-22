@@ -1,26 +1,17 @@
 "use strict";
 (() => {
-  const chartSpace = d3.select("#scroll");
   const scroller = scrollama();
+  const chartSpace = d3.select("#scroll");
   const step = chartSpace.selectAll(".step");
   const headerDuration = 500;
   const textDuration = 1500;
 
   let allSongs = [];
+  let response = [];
   let windowHeight = [];
   let windowWidth = [];
   let stepHeight = [];
   let stepWidth = [];
-
-  d3.json("/load_data", d => {
-    allSongs = d["songs"];
-    return allSongs;
-  })
-    .then(allSongs => {
-      allSongs = allSongs["songs"];
-      init(allSongs);
-    })
-    .catch(err => console.error(err));
 
   function handleResize() {
     const windowWidth = +window.innerWidth;
@@ -41,7 +32,7 @@
     scroller.resize();
   }
 
-  function buildSections(allSongs) {
+  function buildSections() {
     chartSpace
       .append("div")
       .attr("id", "welcomeGroup")
@@ -167,22 +158,6 @@
       .style("opacity", "1");
   }
 
-  function universe(allSongs) {
-    chartSpace.selectAll("#legendText").remove();
-    chartSpace.selectAll("#aboutText").remove();
-    chartSpace.selectAll("#universeText").remove();
-    console.log(allSongs);
-    let songs = d3
-      .select("#universeGroup")
-      .selectAll("text")
-      .data(allSongs)
-      .enter()
-      .append("text")
-      .text(d => {
-        return `${d["song_title"]}, by ${d["artist"]}`;
-      });
-  }
-
   function about() {
     let aboutText = d3
       .selectAll("#aboutGroup")
@@ -209,8 +184,6 @@
 
   function handleStepEnter(response) {
     // response = { element, direction, index }
-    let data = allSongs;
-    console.log(data);
     switch (response.index) {
       case 0: // welcome
         console.log("welcome");
@@ -226,7 +199,7 @@
         break; // universe viz
       case 3:
         console.log("universe");
-        universe(data);
+
         break;
       case 4:
         console.log("about");
@@ -241,12 +214,12 @@
     });
   }
 
-  function init(allSongs) {
+  function init() {
     setupStickyfill();
     // 1. force a resize on load to ensure proper dimensions are sent to scrollama
     handleResize();
 
-    buildSections(allSongs);
+    buildSections();
 
     // 2. setup the scroller passing options
     // this will also initialize trigger observations
@@ -263,4 +236,5 @@
     // setup resize event
     window.addEventListener("resize", handleResize);
   }
+  init();
 })();
