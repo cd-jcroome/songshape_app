@@ -1,4 +1,4 @@
-// Placeholder viz for Rachel's work
+// Placeholder viz for Rachel's work.
 
 "use strict";
 (() => {
