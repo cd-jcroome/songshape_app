@@ -1,28 +1,35 @@
 /* general styles */
 /* font */
-h1 {
+#scroll h1 {
   font-size: 3vw;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#scroll p {
+  font-size: 1vw;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 #welcomeGroup {
   color: magenta;
-  fill: whitesmoke;
+  background-color: whitesmoke;
 }
 
 #mthdGroup {
   color: navy;
-  fill: whitesmoke;
+  background-color: whitesmoke;
 }
 
 #legendGroup {
   color: darkgreen;
-  fill: whitesmoke;
+  background-color: whitesmoke;
 }
 
-#universeGroup div {
-  fill: slategray;
+#universeGroup {
+  color: whitesmoke;
+  background-color: slategray;
 }
 
 #aboutGroup {
   color: darkcyan;
+  background-color: whitesmoke;
 }

@@ -1,21 +1,17 @@
 "use strict";
 (() => {
-  const chartSpace = d3.select("#scroll");
   const scroller = scrollama();
+  const chartSpace = d3.select("#scroll");
   const step = chartSpace.selectAll(".step");
   const headerDuration = 500;
   const textDuration = 1500;
 
-  let data = [];
+  let allSongs = [];
+  let response = [];
   let windowHeight = [];
   let windowWidth = [];
   let stepHeight = [];
   let stepWidth = [];
-
-  // d3.json().then(
-  init();
-  console.log(step);
-  // );
 
   function handleResize() {
     const windowWidth = +window.innerWidth;
@@ -162,36 +158,6 @@
       .style("opacity", "1");
   }
 
-  function universe() {
-    chartSpace.selectAll("#legendText").remove();
-    chartSpace.selectAll("#aboutText").remove();
-    chartSpace.selectAll("#universeText").remove();
-
-    let universeText = d3
-      .selectAll("#universeGroup")
-      .append("g")
-      .attr("id", "universeText")
-      .style("transform", `translate(0,${windowHeight / 2}px)`);
-
-    universeText
-      .append("h1")
-      .text("AudioForma Universe")
-      .style("opacity", "0")
-      .transition()
-      .duration(headerDuration)
-      .style("opacity", "1");
-
-    universeText
-      .append("p")
-      .text(
-        "Here's where we'll let the users navigate the universe of data we've prepared :)."
-      )
-      .style("opacity", "0")
-      .transition()
-      .duration(textDuration)
-      .style("opacity", "1");
-  }
-
   function about() {
     let aboutText = d3
       .selectAll("#aboutGroup")
@@ -233,7 +199,7 @@
         break; // universe viz
       case 3:
         console.log("universe");
-        universe();
+
         break;
       case 4:
         console.log("about");
@@ -250,8 +216,7 @@
 
   function init() {
     setupStickyfill();
-
-    // 1. force a resize on load to ensure proper dimensions are sent to scrollama
+    // 1. force a resize on  to ensure proper dimensions are sent to scrollama
     handleResize();
 
     buildSections();
@@ -264,11 +229,12 @@
         graphic: ".scroll__graphic",
         text: ".scroll__text",
         step: ".step",
-        debug: true
+        debug: false
       })
       // 3. bind scrollama event handlers (this can be chained like below)
       .onStepEnter(handleStepEnter);
     // setup resize event
     window.addEventListener("resize", handleResize);
   }
+  init();
 })();

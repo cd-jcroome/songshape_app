@@ -1,85 +1,51 @@
 from flask import Flask, flash, render_template, request, url_for, redirect, jsonify, session 
-
-# from flask_heroku import Heroku
+from models import db, Song
+import requests
+from flask_heroku import Heroku
 
 app = Flask(__name__)
 
-app.secret_key = "songShape"
+app.secret_key = "audioForma"
 
 # local postgresql or heroku postgresql 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/midterm_db'
-# heroku = Heroku(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/audioforma'
+heroku = Heroku(app)
 
-# db.init_app(app)
+db.init_app(app)
 
 # index route
 @app.route('/')
 @app.route('/index')
 def index():
-        return render_template('index.html',title='Home')
-# # signup route
-# @app.route('/signup', methods=['GET', 'POST'])
-# def signup():
-#     form = SignupForm()
-#     if request.method == 'POST' and form.validate():
-#         username = request.form['username']
-#         password = request.form['password']
-#         existing_user = User.query.filter_by(username=username).first()
-#         if existing_user:
-#             flash('The username already exists, please pick something different.')
-#             return redirect(url_for('signup'))
-#         else:
-#             user = User(username=username, password=sha256_crypt.hash(password))
-#             db.session.add(user)
-#             db.session.commit()
-#             flash('Welcome to the cool kids club! Let\'s look at some condos.')
-#             return redirect(url_for('login'))
-#     else:
-#         return render_template("signup.html", form=form)
+    songs = Song.query.all()
+    return render_template('index.html',title='AudioForma',songs=songs)
 
-# # login route
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if request.method == 'POST' and form.validate():
-#         username = request.form['username']
-#         password = request.form['password']
+# detail route 
+@app.route('/detail/<spotify_id>')
+def detail(spotify_id):
+    song = Song.query.filter_by(spotify_id=spotify_id).first()
+    return render_template('detail.html',title=song.spotify_id,song=song)
 
-#         user = User.query.filter_by(username=username).first()
+# load_metadata route (for universe vis)
+@app.route('/load_metadata',methods=['GET'])
+def load_metadata():
+    songs_json = {'songs': []}
+    songs = Song.query.all()
+    for song in songs:
+        song_info = song.__dict__
+        del song_info['_sa_instance_state']
+        songs_json['songs'].append(song_info)
+    return jsonify(songs_json)
 
-#         if user is None or not sha256_crypt.verify(password, user.password):
-#             flash('Invalid username or password')
-#             return redirect(url_for('login'))
-#         else:
-#             session['username'] = username
-#             return redirect(url_for('index'))
-#     else:
-#         return render_template('login.html',title='Login',form=form)
-# # logout route
-# @app.route('/logout', methods=['POST'])
-# def logout():
-#     session.clear()
-#     return redirect(url_for('index'))
-
-# info route TODO: refactor to detail song view.
-# @app.route('/info/<mlsnum>')
-# def info(mlsnum):
-
-# # add the rest of the info route here
-#     return render_template('info.html',title=listing.mlsnum,listing=listing)
-
-
-
-# # load_data route (for D3 vis) TODO:refactor to pull song Data from Github
-# @app.route('/load_data',methods=['GET'])
-# def load_data():
-#     condos_json = {'condos': []}
-#     condos = Condo.query.all()
-#     for condo in condos:
-#         condo_info = condo.__dict__
-#         del condo_info['_sa_instance_state']
-#         condos_json['condos'].append(condo_info)
-#     return jsonify(condos_json)
+# load_songdata route (for universe vis)
+@app.route('/load_songdata/<spotify_id>',methods=['GET'])
+def load_songdata(spotify_id):
+    notes_json = {'notes': []}
+    data_name = Song.query.filter_by(spotify_id=spotify_id).first().data_name
+    notes = requests.get('https://raw.githubusercontent.com/Jasparr77/songShape/master/output/librosa_128/'
+    +data_name+'_h.csv')
+    notes_json['notes'].append(notes.text)
+    return notes.text
 
 if __name__ == "__main__":
     app.run(debug=True)
