@@ -36,8 +36,6 @@ def detail(spotify_id):
 @app.route('/load_metadata',methods=['GET','POST'])
 def load_metadata():
     spotify_grant_type = 'client_credentials'
-    spotify_key = '6b58815e509940539428705cce2b1d14'
-    spotify_secret_key = 'fed393d5a9b846e5a8b9f7e3139f8d63'
     post_data = {'grant_type':spotify_grant_type,'client_id':spotify_key,'client_secret':spotify_secret_key}
     post_request = requests.post(f'https://accounts.spotify.com/api/token',data=post_data)
 
