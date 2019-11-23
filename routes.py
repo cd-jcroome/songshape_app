@@ -5,8 +5,6 @@ import requests
 import base64
 import json
 from flask_heroku import Heroku
-from requests_oauthlib import OAuth1
-from oauthlib.oauth2.rfc6749.grant_types import client_credentials
 
 app = Flask(__name__)
 
