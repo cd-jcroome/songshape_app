@@ -2,8 +2,9 @@ from flask import Flask, flash, render_template, request, url_for, redirect, jso
 from models import db, Song
 
 import requests
-import base64
 import json
+import os
+
 from flask_heroku import Heroku
 
 app = Flask(__name__)
