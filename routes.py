@@ -10,6 +10,9 @@ app = Flask(__name__)
 
 app.secret_key = "audioForma"
 
+spotify_key = os.environ['spotify_key']
+spotify_secret_key = os.environ['spotify_secret_key']
+
 
 # local postgresql or heroku postgresql 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://eeisesngobgpmw:022a760c5e2a14fb950fc580e699168d321a7c5ee2e6a23bf6a63e7857ad09f1@ec2-54-225-173-42.compute-1.amazonaws.com:5432/dbdslcdkv11cgu'
