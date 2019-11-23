@@ -5,6 +5,7 @@
   const chartSpace = d3.select("#scroll");
 
   d3.json("/load_metadata", d => {
+    console.log(d);
     allSongs = d["songs"];
     return allSongs;
   })
