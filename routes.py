@@ -14,8 +14,8 @@ app.secret_key = "audioForma"
 
 
 # local postgresql or heroku postgresql 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://eeisesngobgpmw:022a760c5e2a14fb950fc580e699168d321a7c5ee2e6a23bf6a63e7857ad09f1@ec2-54-225-173-42.compute-1.amazonaws.com:5432/dbdslcdkv11cgu'
-# heroku = Heroku(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://eeisesngobgpmw:022a760c5e2a14fb950fc580e699168d321a7c5ee2e6a23bf6a63e7857ad09f1@ec2-54-225-173-42.compute-1.amazonaws.com:5432/dbdslcdkv11cgu'
+heroku = Heroku(app)
 
 db.init_app(app)
 
@@ -36,8 +36,6 @@ def detail(spotify_id):
 @app.route('/load_metadata',methods=['GET','POST'])
 def load_metadata():
     spotify_grant_type = 'client_credentials'
-    spotify_key = '6b58815e509940539428705cce2b1d14'
-    spotify_secret_key = 'fed393d5a9b846e5a8b9f7e3139f8d63'
     post_data = {'grant_type':spotify_grant_type,'client_id':spotify_key,'client_secret':spotify_secret_key}
     post_request = requests.post(f'https://accounts.spotify.com/api/token',data=post_data)
 
