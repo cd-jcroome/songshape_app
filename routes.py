@@ -4,6 +4,8 @@ from models import db, Song
 import requests
 import json
 import os
+import socket
+from urllib.parse import quote
 
 from flask_heroku import Heroku
 
@@ -11,12 +13,32 @@ app = Flask(__name__)
 
 app.secret_key = "audioForma"
 
-spotify_key = os.environ['spotify_key']
-spotify_secret_key = os.environ['spotify_secret_key']
+
+#Spotify params
+
+print(socket.gethostname())
+
+if socket.gethostname()=="iMac.local":
+    from local_spotify_params import key, secret_key
+    spotify_key = key
+    spotify_secret_key = secret_key 
+    redirect_uri = 'http://127.0.0.1:5000/'
+else:
+    spotify_key = os.environ['spotify_key']
+    spotify_secret_key = os.environ['spotify_secret_key']  
+    redirect_uri = 'https://audioforma.herokuapp.com/'    
+
+scopes = 'user-library-read'
+oauth_data = {'scope':scopes,'client_id':spotify_key,'redirect_uri':redirect_uri, 'response_type':'code'}
+url_args = "&".join(["{}={}".format(key,quote(val)) for key, val in oauth_data.items()])
+
+spotify_auth_url = 'https://accounts.spotify.com/authorize/?'+'{}'.format(url_args)
+
+
 
 
 # local postgresql or heroku postgresql 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://eeisesngobgpmw:022a760c5e2a14fb950fc580e699168d321a7c5ee2e6a23bf6a63e7857ad09f1@ec2-54-225-173-42.compute-1.amazonaws.com:5432/dbdslcdkv11cgu'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://eeisesngobgpmw:022a760c5e2a14fb950fc580e699168d321a7c5ee2e6a23bf6a63e7857ad09f1@ec2-54-225-173-42.compute-1.amazonaws.com:5432/dbdslcdkv11cgu'
 heroku = Heroku(app)
 
 db.init_app(app)
@@ -25,6 +47,8 @@ db.init_app(app)
 @app.route('/')
 @app.route('/index')
 def index():
+
+    return redirect(spotify_auth_url)
     songs = Song.query.all()
     return render_template('index.html',title='AudioForma',songs=songs)
 
@@ -37,8 +61,11 @@ def detail(spotify_id):
 # load_metadata route (for universe vis)
 @app.route('/load_metadata',methods=['GET','POST'])
 def load_metadata():
+
+    oauth_code = request.args['code']  
+
     spotify_grant_type = 'client_credentials'
-    post_data = {'grant_type':spotify_grant_type,'client_id':spotify_key,'client_secret':spotify_secret_key}
+    post_data = {'grant_type':spotify_grant_type,'client_id':spotify_key,'client_secret':spotify_secret_key,'code':oauth_code}
     post_request = requests.post(f'https://accounts.spotify.com/api/token',data=post_data)
 
     response_data = json.loads(post_request.text)
