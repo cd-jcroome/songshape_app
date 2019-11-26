@@ -33,7 +33,9 @@ oauth_data = {'scope':scopes,'client_id':spotify_key,'redirect_uri':redirect_uri
 url_args = "&".join(["{}={}".format(key,quote(val)) for key, val in oauth_data.items()])
 
 spotify_auth_url = 'https://accounts.spotify.com/authorize/?'+'{}'.format(url_args)
-
+spotify_token_url = 'https://accounts.spotify.com/api/token'
+spotify_audio_features_url = 'https://api.spotify.com/v1/audio-features/'
+spotify_user_tracks_url = 'https://api.spotify.com/v1/me/tracks'
 
 
 
@@ -48,9 +50,12 @@ db.init_app(app)
 @app.route('/index')
 def index():
 
-    return redirect(spotify_auth_url)
-    songs = Song.query.all()
-    return render_template('index.html',title='AudioForma',songs=songs)
+    if 'code' in request.args:
+        session['oauth_code'] = request.args['code']
+        songs = Song.query.all()
+        return render_template('index.html',title='AudioForma',songs=songs)
+    else:
+        return redirect(spotify_auth_url)
 
 # detail route 
 @app.route('/detail/<spotify_id>')
@@ -62,29 +67,33 @@ def detail(spotify_id):
 @app.route('/load_metadata',methods=['GET','POST'])
 def load_metadata():
 
-    oauth_code = request.args['code']  
+    oauth_code = session.get('oauth_code')
 
-    spotify_grant_type = 'client_credentials'
-    post_data = {'grant_type':spotify_grant_type,'client_id':spotify_key,'client_secret':spotify_secret_key,'code':oauth_code}
-    post_request = requests.post(f'https://accounts.spotify.com/api/token',data=post_data)
+    post_data = {
+        'grant_type':'authorization_code',
+        'code':oauth_code,
+        'redirect_uri':redirect_uri,
+        'client_id':spotify_key,
+        'client_secret':spotify_secret_key,
+        }
+    post_request = requests.post(spotify_token_url,data=post_data)
 
     response_data = json.loads(post_request.text)
 
     access_token = response_data['access_token']
-    print(access_token)
     authorization_header = {'Authorization': f'Bearer {access_token}'}
 
-    songs_json = {'songs': []}
-    songs = Song.query.all()
-    for i, song in enumerate(songs):
-        url = 'https://api.spotify.com/v1/audio-features/'+song.spotify_id
-        spotify_data = requests.get(url, headers=authorization_header).json()
-        song.spotify_data = spotify_data
-        song_info = song.__dict__
-        del song_info['_sa_instance_state']
-        songs_json['songs'].append(song_info)
+# TODO- add pagination
+    tracks_json = requests.get(spotify_user_tracks_url, headers=authorization_header).json()
+
+    for i, t in enumerate(tracks_json['items']):
+        print(t['track']['name'])
+        af_url = spotify_audio_features_url+t['track']['id']
+        af_data = requests.get(af_url, headers=authorization_header).json()
+        t['track']['af_data'] = af_data
+        # tracks_json['items'][i]['track']['af_data'].extend(af_data)
         # songs_json['songs'][i].extend(spotify_data)
-    return jsonify(songs_json)
+    return jsonify(tracks_json)
 
 # load_songdata route (for universe vis)
 @app.route('/load_songdata/<spotify_id>',methods=['GET'])

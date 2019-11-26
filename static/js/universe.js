@@ -5,12 +5,11 @@
   const chartSpace = d3.select("#scroll");
 
   d3.json("/load_metadata", d => {
-    console.log(d);
-    allSongs = d["songs"];
+    console.log(d["items"]);
+    allSongs = d["items"];
     return allSongs;
   })
     .then(allSongs => {
-      allSongs = allSongs["songs"];
       drawStuff(allSongs);
     })
     .catch(err => console.error(err));
