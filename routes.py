@@ -37,6 +37,7 @@ url_args = "&".join(["{}={}".format(key,quote(val)) for key, val in oauth_data.i
 spotify_auth_url = 'https://accounts.spotify.com/authorize/?'+'{}'.format(url_args)
 spotify_token_url = 'https://accounts.spotify.com/api/token'
 spotify_audio_features_url = 'https://api.spotify.com/v1/audio-features/'
+spotify_audio_analysis_url = 'https://api.spotify.com/v1/audio-analysis/'
 spotify_user_tracks_url = 'https://api.spotify.com/v1/me/tracks'
 
 
@@ -62,8 +63,8 @@ def index():
 # detail route 
 @app.route('/detail/<spotify_id>')
 def detail(spotify_id):
-    song = Song.query.filter_by(spotify_id=spotify_id).first()
-    return render_template('detail.html',title=song.spotify_id,song=song)
+    spotify_id=spotify_id
+    return render_template('detail.html',title=spotify_id)
 
 # load_metadata route (for universe vis)
 @app.route('/load_metadata',methods=['GET','POST'])
@@ -121,14 +122,25 @@ def load_metadata():
     return jsonify(tracks_json)
 
 # load_songdata route (for universe vis)
-@app.route('/load_songdata/<spotify_id>',methods=['GET'])
-def load_songdata(spotify_id): 
-    notes_json = {'notes': []}
-    data_name = Song.query.filter_by(spotify_id=spotify_id).first().data_name
-    notes = requests.get('https://raw.githubusercontent.com/Jasparr77/songShape/master/output/librosa_128/'
-    +data_name+'_h.csv')
-    notes_json['notes'].append(notes.text)
-    return notes.text
+@app.route('/load_songdata/<spotify_id>',methods=['GET','POST'])
+def load_songdata(spotify_id):
+
+    get_data = {
+        'grant_type':'client_credentials',
+        'client_id':spotify_key,
+        'client_secret':spotify_secret_key,
+        }
+    post_request = requests.post(spotify_token_url,data=get_data)
+
+    response_data = json.loads(post_request.text)
+    print(response_data)
+
+    access_token = response_data['access_token']
+    authorization_header = {'Authorization': f'Bearer {access_token}'}
+
+    audio_analysis = requests.get(spotify_audio_analysis_url+spotify_id, headers=authorization_header).json()
+
+    return audio_analysis
 
 if __name__ == "__main__":
     app.run(debug=True)
