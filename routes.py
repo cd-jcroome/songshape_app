@@ -1,10 +1,12 @@
 from flask import Flask, flash, render_template, request, url_for, redirect, jsonify, session 
 from models import db, Song
 
+import math
 import requests
 import json
 import os
 import socket
+import pandas as pd
 from urllib.parse import quote
 
 from flask_heroku import Heroku
@@ -67,6 +69,7 @@ def detail(spotify_id):
 @app.route('/load_metadata',methods=['GET','POST'])
 def load_metadata():
 
+# Authentication Call
     oauth_code = session.get('oauth_code')
 
     post_data = {
@@ -83,21 +86,43 @@ def load_metadata():
     access_token = response_data['access_token']
     authorization_header = {'Authorization': f'Bearer {access_token}'}
 
-# TODO- add pagination
-    tracks_json = requests.get(spotify_user_tracks_url, headers=authorization_header).json()
+# Data Request 1 of 2
+    limit = 50
+    user_tracks = requests.get(spotify_user_tracks_url, headers=authorization_header, params={'limit':limit}).json()
+    num_calls = math.ceil(user_tracks['total']/limit)
 
-    for i, t in enumerate(tracks_json['items']):
-        print(t['track']['name'])
-        af_url = spotify_audio_features_url+t['track']['id']
-        af_data = requests.get(af_url, headers=authorization_header).json()
-        t['track']['af_data'] = af_data
-        # tracks_json['items'][i]['track']['af_data'].extend(af_data)
-        # songs_json['songs'][i].extend(spotify_data)
+    tracks_json = user_tracks['items']
+    
+    while user_tracks['next']:
+        user_tracks = requests.get(user_tracks['next'], headers=authorization_header, params={'limit':limit}).json()
+        tracks_json.extend(user_tracks['items'])
+
+# Data Request 2 of 2
+    track_list = []
+    af_data = []
+
+    for i, t in enumerate(tracks_json):
+        track_list.append(tracks_json[i]['track']['id'])
+
+    def chunkify(l,n):
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    super_list = list(chunkify(track_list, 100))
+
+    for i, l in enumerate(super_list):
+        l_str = str(l).replace("'","").replace(" ","")
+        af_data_chunk = requests.get(spotify_audio_features_url, headers=authorization_header, params={'ids':l_str}).json()
+        af_data.extend(af_data_chunk['audio_features'])
+
+    for i, l in enumerate(tracks_json):
+        l['af_data'] = af_data[i]
+
     return jsonify(tracks_json)
 
 # load_songdata route (for universe vis)
 @app.route('/load_songdata/<spotify_id>',methods=['GET'])
-def load_songdata(spotify_id):
+def load_songdata(spotify_id): 
     notes_json = {'notes': []}
     data_name = Song.query.filter_by(spotify_id=spotify_id).first().data_name
     notes = requests.get('https://raw.githubusercontent.com/Jasparr77/songShape/master/output/librosa_128/'
