@@ -8,6 +8,7 @@
 
   let allSongs = [];
   let response = [];
+  let header = d3.select(".header").select("h1");
   let windowHeight = [];
   let windowWidth = [];
   let stepHeight = [];
@@ -84,15 +85,6 @@
       .style("transform", `translate(0,${windowHeight / 2}px)`);
 
     welcomeText
-      .append("h1")
-      .text("What does a song look like?")
-      .attr("text-align", "left")
-      .style("opacity", "0")
-      .transition()
-      .duration(headerDuration)
-      .style("opacity", "1");
-
-    welcomeText
       .append("p")
       .text(
         "That's the riddle we set out to answer with this project. Through many different trials and iterations, this site is our attempt to share what we found with you. \n\nScroll down to begin."
@@ -114,13 +106,10 @@
       .attr("id", "mthdText")
       .style("transform", `translate(0,${windowHeight / 2}px)`);
 
-    mthdText
-      .append("h1")
-      .text("Methodology")
-      .style("opacity", "0")
+    header
       .transition()
       .duration(headerDuration)
-      .style("opacity", "1");
+      .text("Methodology")
 
     mthdText
       .append("p")
@@ -141,13 +130,10 @@
       .attr("id", "legendText")
       .style("transform", `translate(0,${windowHeight / 2}px)`);
 
-    legendText
-      .append("h1")
-      .text("Legend")
-      .style("opacity", "0")
+    header
       .transition()
       .duration(headerDuration)
-      .style("opacity", "1");
+      .text("Legend")
 
     legendText
       .append("p")
@@ -165,13 +151,10 @@
       .attr("id", "aboutText")
       .style("transform", `translate(0,${windowHeight / 2}px)`);
 
-    aboutText
-      .append("h1")
-      .text("About our Team")
-      .style("opacity", "0")
+    header
       .transition()
       .duration(headerDuration)
-      .style("opacity", "1");
+      .text("About our Team")
 
     aboutText
       .append("p")
@@ -229,7 +212,7 @@
         graphic: ".scroll__graphic",
         text: ".scroll__text",
         step: ".step",
-        debug: false
+        debug: true
       })
       // 3. bind scrollama event handlers (this can be chained like below)
       .onStepEnter(handleStepEnter);

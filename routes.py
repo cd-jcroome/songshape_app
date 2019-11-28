@@ -2,6 +2,7 @@ from flask import Flask, flash, render_template, request, url_for, redirect, jso
 from models import db, Song
 
 import requests
+import math
 import json
 import os
 import socket
@@ -18,11 +19,12 @@ app.secret_key = "audioForma"
 
 print(socket.gethostname())
 
-if socket.gethostname()=="iMac.local":
+if socket.gethostname() in ["iMac.local","APJ2HV2R68BAFD"]:
     from local_spotify_params import key, secret_key
     spotify_key = key
     spotify_secret_key = secret_key 
     redirect_uri = 'http://127.0.0.1:5000/'
+
 else:
     spotify_key = os.environ['spotify_key']
     spotify_secret_key = os.environ['spotify_secret_key']  
@@ -52,16 +54,16 @@ def index():
 
     if 'code' in request.args:
         session['oauth_code'] = request.args['code']
-        songs = Song.query.all()
-        return render_template('index.html',title='AudioForma',songs=songs)
+        # songs = Song.query.all()
+        return render_template('index.html',title='AudioForma')
     else:
         return redirect(spotify_auth_url)
 
 # detail route 
 @app.route('/detail/<spotify_id>')
 def detail(spotify_id):
-    song = Song.query.filter_by(spotify_id=spotify_id).first()
-    return render_template('detail.html',title=song.spotify_id,song=song)
+    # song = Song.query.filter_by(spotify_id=spotify_id).first()
+    return render_template('detail.html',title=song.spotify_id)
 
 # load_metadata route (for universe vis)
 @app.route('/load_metadata',methods=['GET','POST'])
@@ -84,16 +86,21 @@ def load_metadata():
     authorization_header = {'Authorization': f'Bearer {access_token}'}
 
 # TODO- add pagination
+    limit = 20
     tracks_json = requests.get(spotify_user_tracks_url, headers=authorization_header).json()
+    num_calls = math.ceil((tracks_json['total'] / limit))
+    for page in range(1, num_calls):
+        tracks_json_add = requests.get(spotify_user_tracks_url, headers=authorization_header, params={'offset':(page*limit)+1}).json()
+        for i, t in enumerate(tracks_json_add['items']):
+            tracks_json['items'][i] = t
 
     for i, t in enumerate(tracks_json['items']):
-        print(t['track']['name'])
         af_url = spotify_audio_features_url+t['track']['id']
         af_data = requests.get(af_url, headers=authorization_header).json()
         t['track']['af_data'] = af_data
         # tracks_json['items'][i]['track']['af_data'].extend(af_data)
         # songs_json['songs'][i].extend(spotify_data)
-    return jsonify(tracks_json)
+    return tracks_json
 
 # load_songdata route (for universe vis)
 @app.route('/load_songdata/<spotify_id>',methods=['GET'])
