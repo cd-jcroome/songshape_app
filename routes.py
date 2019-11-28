@@ -1,12 +1,7 @@
 from flask import Flask, flash, render_template, request, url_for, redirect, jsonify, session 
 from models import db, Song
 
-import math
-import requests
-import json
-import os
-import socket
-import pandas as pd
+import math, random, requests, json, os, socket, string
 from urllib.parse import quote
 
 from flask_heroku import Heroku
@@ -30,8 +25,13 @@ else:
     spotify_secret_key = os.environ['spotify_secret_key']  
     redirect_uri = 'https://audioforma.herokuapp.com/'    
 
+
+def randomword(length):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
+
 scopes = 'user-library-read'
-oauth_data = {'scope':scopes,'client_id':spotify_key,'redirect_uri':redirect_uri, 'response_type':'code'}
+oauth_data = {'scope':scopes,'client_id':spotify_key,'redirect_uri':redirect_uri, 'response_type':'code', 'state':str(randomword(8))}
 url_args = "&".join(["{}={}".format(key,quote(val)) for key, val in oauth_data.items()])
 
 spotify_auth_url = 'https://accounts.spotify.com/authorize/?'+'{}'.format(url_args)
