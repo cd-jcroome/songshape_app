@@ -1,11 +1,7 @@
 from flask import Flask, flash, render_template, request, url_for, redirect, jsonify, session 
 from models import db, Song
 
-import requests
-import math
-import json
-import os
-import socket
+import math, random, requests, json, os, socket, string
 from urllib.parse import quote
 
 from flask_heroku import Heroku
@@ -30,13 +26,19 @@ else:
     spotify_secret_key = os.environ['spotify_secret_key']  
     redirect_uri = 'https://audioforma.herokuapp.com/'    
 
+
+def randomword(length):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
+
 scopes = 'user-library-read'
-oauth_data = {'scope':scopes,'client_id':spotify_key,'redirect_uri':redirect_uri, 'response_type':'code'}
+oauth_data = {'scope':scopes,'client_id':spotify_key,'redirect_uri':redirect_uri, 'response_type':'code', 'state':str(randomword(8))}
 url_args = "&".join(["{}={}".format(key,quote(val)) for key, val in oauth_data.items()])
 
 spotify_auth_url = 'https://accounts.spotify.com/authorize/?'+'{}'.format(url_args)
 spotify_token_url = 'https://accounts.spotify.com/api/token'
 spotify_audio_features_url = 'https://api.spotify.com/v1/audio-features/'
+spotify_audio_analysis_url = 'https://api.spotify.com/v1/audio-analysis/'
 spotify_user_tracks_url = 'https://api.spotify.com/v1/me/tracks'
 
 
@@ -62,13 +64,14 @@ def index():
 # detail route 
 @app.route('/detail/<spotify_id>')
 def detail(spotify_id):
-    # song = Song.query.filter_by(spotify_id=spotify_id).first()
-    return render_template('detail.html',title=song.spotify_id)
+    spotify_id=spotify_id
+    return render_template('detail.html',title=spotify_id)
 
 # load_metadata route (for universe vis)
 @app.route('/load_metadata',methods=['GET','POST'])
 def load_metadata():
 
+# Authentication Call
     oauth_code = session.get('oauth_code')
 
     post_data = {
@@ -85,32 +88,60 @@ def load_metadata():
     access_token = response_data['access_token']
     authorization_header = {'Authorization': f'Bearer {access_token}'}
 
-# TODO- add pagination
-    limit = 20
-    tracks_json = requests.get(spotify_user_tracks_url, headers=authorization_header).json()
-    num_calls = math.ceil((tracks_json['total'] / limit))
-    for page in range(1, num_calls):
-        tracks_json_add = requests.get(spotify_user_tracks_url, headers=authorization_header, params={'offset':(page*limit)+1}).json()
-        for i, t in enumerate(tracks_json_add['items']):
-            tracks_json['items'][i] = t
+# Data Request 1 of 2
+    limit = 50
+    user_tracks = requests.get(spotify_user_tracks_url, headers=authorization_header, params={'limit':limit}).json()
+    num_calls = math.ceil(user_tracks['total']/limit)
 
-    for i, t in enumerate(tracks_json['items']):
-        af_url = spotify_audio_features_url+t['track']['id']
-        af_data = requests.get(af_url, headers=authorization_header).json()
-        t['track']['af_data'] = af_data
-        # tracks_json['items'][i]['track']['af_data'].extend(af_data)
-        # songs_json['songs'][i].extend(spotify_data)
-    return tracks_json
+    tracks_json = user_tracks['items']
+    
+    while user_tracks['next']:
+        user_tracks = requests.get(user_tracks['next'], headers=authorization_header, params={'limit':limit}).json()
+        tracks_json.extend(user_tracks['items'])
+
+# Data Request 2 of 2
+    track_list = []
+    af_data = []
+
+    for i, t in enumerate(tracks_json):
+        track_list.append(tracks_json[i]['track']['id'])
+
+    def chunkify(l,n):
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    super_list = list(chunkify(track_list, 100))
+
+    for i, l in enumerate(super_list):
+        l_str = str(l).replace("'","").replace(" ","")
+        af_data_chunk = requests.get(spotify_audio_features_url, headers=authorization_header, params={'ids':l_str}).json()
+        af_data.extend(af_data_chunk['audio_features'])
+
+    for i, l in enumerate(tracks_json):
+        l['af_data'] = af_data[i]
+
+    return jsonify(tracks_json)
 
 # load_songdata route (for universe vis)
-@app.route('/load_songdata/<spotify_id>',methods=['GET'])
+@app.route('/load_songdata/<spotify_id>',methods=['GET','POST'])
 def load_songdata(spotify_id):
-    notes_json = {'notes': []}
-    data_name = Song.query.filter_by(spotify_id=spotify_id).first().data_name
-    notes = requests.get('https://raw.githubusercontent.com/Jasparr77/songShape/master/output/librosa_128/'
-    +data_name+'_h.csv')
-    notes_json['notes'].append(notes.text)
-    return notes.text
+
+    get_data = {
+        'grant_type':'client_credentials',
+        'client_id':spotify_key,
+        'client_secret':spotify_secret_key,
+        }
+    post_request = requests.post(spotify_token_url,data=get_data)
+
+    response_data = json.loads(post_request.text)
+    print(response_data)
+
+    access_token = response_data['access_token']
+    authorization_header = {'Authorization': f'Bearer {access_token}'}
+
+    audio_analysis = requests.get(spotify_audio_analysis_url+spotify_id, headers=authorization_header).json()
+
+    return audio_analysis
 
 if __name__ == "__main__":
     app.run(debug=True)

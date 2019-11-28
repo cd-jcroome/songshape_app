@@ -7,12 +7,12 @@
 
   let notes = [];
 
-  d3.csv(`/load_songdata/${spotify_id}`, d => {
-    notes = d;
-    return notes;
+  d3.json(`/load_songdata/${spotify_id}`, d => {
+    song_data = d;
+    return song_data;
   })
-    .then(notes => {
-      console.log(notes);
+    .then(song_data => {
+      console.log(song_data);
     })
     .catch(err => console.error(err));
 })();

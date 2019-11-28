@@ -3,8 +3,8 @@
   const scroller = scrollama();
   const chartSpace = d3.select("#scroll");
   const step = chartSpace.selectAll(".step");
-  const headerDuration = 500;
-  const textDuration = 1500;
+  const headerDuration = 300;
+  const textDuration = 400;
 
   let allSongs = [];
   let response = [];
@@ -87,7 +87,7 @@
     welcomeText
       .append("p")
       .text(
-        "That's the riddle we set out to answer with this project. Through many different trials and iterations, this site is our attempt to share what we found with you. \n\nScroll down to begin."
+        "That's the question we set out to answer with this project. Through many different trials and iterations, this site is our attempt to share what we found with you. \n\nScroll down to begin."
       )
       .attr("text-align", "left")
       .style("opacity", "0")
