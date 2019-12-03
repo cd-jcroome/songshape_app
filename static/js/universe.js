@@ -3,7 +3,6 @@
 "use strict";
 (() => {
   const chartSpace = d3.select("#scroll");
-
   d3.json("/load_metadata", d => {
     allSongs = d;
     return allSongs;
@@ -28,7 +27,7 @@
       .enter()
       .append("text")
       .html(d => {
-        return ` <a href="/detail/${d["track"]["id"]}"
+        return ` <a href="/detail/${d["spotify_id"]}"
           </a>
           ${d["track_name"]}, by ${d["artist"]}`;
       });

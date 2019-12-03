@@ -104,7 +104,7 @@
       .attr("id", "welcomeText")
       
       welcomeText
-      .append("h1")
+      .append("h2")
       .text("What does a song look like?")
       .attr("text-align", "left")
       .style("opacity", "0")
@@ -139,7 +139,7 @@
       .attr("id", "mthdText");
 
     mthdText
-      .append("h1")
+      .append("h2")
       .text("Methodology")
       .style("opacity", "0")
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
@@ -167,7 +167,7 @@
       .attr("id", "legendText");
 
     legendText
-      .append("h1")
+      .append("h2")
       .text("Legend")
       .style("opacity", "0")
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
@@ -195,7 +195,7 @@
     .attr("id", "aboutText");
     
     aboutText
-    .append("h1")
+    .append("h2")
     .text("About our Team")
     .style("opacity", "0")
     .style("transform", `translate(0px,${stepHeight / 2}px)`)
@@ -259,7 +259,7 @@
         graphic: ".scroll__graphic",
         text: ".scroll__text",
         step: ".step",
-        debug: true
+        debug: false
       })
       // 3. bind scrollama event handlers (this can be chained like below)
       .onStepEnter(handleStepEnter);
