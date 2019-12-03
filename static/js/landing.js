@@ -34,63 +34,85 @@
 
   function buildSections() {
     chartSpace
+      .append("a")
+      .attr("name", "welcome")
       .append("div")
       .attr("id", "welcomeGroup")
       .attr("class", "step")
       .attr("data-step", "a")
       .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`);
+      .style("width", `${stepWidth}px`)
 
     chartSpace
+      .append("a")
+      .attr("name", "methodology")
       .append("div")
       .attr("id", "mthdGroup")
       .attr("class", "step")
       .attr("data-step", "b")
       .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`);
+      .style("width", `${stepWidth}px`)
 
     chartSpace
+      .append("a")
+      .attr("name", "legend")
       .append("div")
       .attr("id", "legendGroup")
       .attr("class", "step")
       .attr("data-step", "c")
       .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`);
+      .style("width", `${stepWidth}px`)
+      ;
 
     chartSpace
+      .append("a")
+      .attr("name", "universe")
       .append("div")
       .attr("id", "universeGroup")
       .attr("class", "step")
       .attr("data-step", "d")
       .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`);
+      .style("width", `${stepWidth}px`)
+      ;
 
     chartSpace
+      .append("a")
+      .attr("name", "about")
       .append("div")
       .attr("id", "aboutGroup")
       .attr("class", "step")
       .attr("data-step", "d")
       .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`);
+      .style("width", `${stepWidth}px`)
+  }
+
+  function activelink(linkName){
+    d3.selectAll(".active").classed("active",false)
+    var linkName = d3.selectAll(`#${linkName}`)
+    linkName.classed("active", !linkName.classed("active"))
+
   }
 
   function welcome() {
     chartSpace.selectAll("#mthdText").remove();
     chartSpace.selectAll("#welcomeText").remove();
+
+    activelink('homelnk')
+
     let welcomeText = d3
       .selectAll("#welcomeGroup")
       .append("g")
       .attr("id", "welcomeText")
-      .style("transform", `translate(0,${windowHeight / 2}px)`);
-
-    welcomeText
+      
+      welcomeText
       .append("h1")
       .text("What does a song look like?")
       .attr("text-align", "left")
       .style("opacity", "0")
       .transition()
       .duration(headerDuration)
-      .style("opacity", "1");
+      .style("opacity", "1")
+      .style("transform", "translate(0,"+(windowHeight / 2)+"px)");
 
     welcomeText
       .append("p")
@@ -108,6 +130,9 @@
     chartSpace.selectAll("#welcomeText").remove();
     chartSpace.selectAll("#legendText").remove();
     chartSpace.selectAll("#mthdText").remove();
+
+    activelink('mthdlnk')
+
     let mthdText = d3
       .selectAll("#mthdGroup")
       .append("g")
@@ -133,8 +158,10 @@
 
   function legend() {
     chartSpace.selectAll("#mthdText").remove();
-    chartSpace.selectAll("#universeText").remove();
     chartSpace.selectAll("#legendText").remove();
+
+    activelink('lgndlnk')
+
     let legendText = d3
       .selectAll("#legendGroup")
       .append("g")
@@ -159,6 +186,10 @@
   }
 
   function about() {
+    chartSpace.selectAll("#aboutText").remove();
+
+    activelink('abtlnk')
+
     let aboutText = d3
       .selectAll("#aboutGroup")
       .append("g")
@@ -188,18 +219,18 @@
       case 0: // welcome
         console.log("welcome");
         welcome();
-        break; // methodology
-      case 1:
+        break; 
+      case 1:// methodology
         console.log("methodology");
         methodology();
-        break; // legend
-      case 2:
+        break; 
+      case 2:// legend
         console.log("legend");
         legend();
-        break; // universe viz
-      case 3:
+        break; 
+      case 3:// universe viz
         console.log("universe");
-
+        activelink('xplrlnk')
         break;
       case 4:
         console.log("about");
@@ -209,7 +240,7 @@
   }
 
   function setupStickyfill() {
-    d3.selectAll(".sticky").each(function() {
+    d3.selectAll(".sticky").each(function () {
       Stickyfill.add(this);
     });
   }

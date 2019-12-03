@@ -15,15 +15,17 @@ app.secret_key = "audioForma"
 
 print(socket.gethostname())
 
-if socket.gethostname()=="iMac":
+if socket.gethostname() in "iMac, APJ2HV2R68BAFD":
     from local_spotify_params import key, secret_key
     spotify_key = key
     spotify_secret_key = secret_key 
     redirect_uri = 'http://127.0.0.1:5000/'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/audioforma'
 else:
     spotify_key = os.environ['spotify_key']
     spotify_secret_key = os.environ['spotify_secret_key']  
-    redirect_uri = 'https://audioforma.herokuapp.com/'    
+    redirect_uri = 'https://audioforma.herokuapp.com/'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://eeisesngobgpmw:022a760c5e2a14fb950fc580e699168d321a7c5ee2e6a23bf6a63e7857ad09f1@ec2-54-225-173-42.compute-1.amazonaws.com:5432/dbdslcdkv11cgu'    
 
 
 def randomword(length):
@@ -42,10 +44,7 @@ spotify_user_tracks_url = 'https://api.spotify.com/v1/me/tracks'
 
 
 
-# local postgresql or heroku postgresql 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://eeisesngobgpmw:022a760c5e2a14fb950fc580e699168d321a7c5ee2e6a23bf6a63e7857ad09f1@ec2-54-225-173-42.compute-1.amazonaws.com:5432/dbdslcdkv11cgu'
 heroku = Heroku(app)
-
 db.init_app(app)
 
 # index route
@@ -84,29 +83,22 @@ def load_metadata():
         sd = song.__dict__
         data_name = sd['data_name']
         spotify_id = sd['spotify_id']
-        songs_json['songs'].append({'data_name':data_name,'spotify_id':spotify_id,'af_data':[]})
+        track_name = sd['song_title']
+        artist = sd['artist']
+        songs_json['songs'].append({'track_name':track_name,'artist':artist,'data_name':data_name,'spotify_id':spotify_id,'af_data':[]})
 
-
-    # # Handle large list of songs (once there are over 100, queries need to be paginated)
+# # Handle large list of songs (once there are over 100, queries need to be paginated)
     # def chunkify(l,n):
     #     for i in range(0, len(l), n):
     #         yield l[i:i + n]
-
     # songs_list = list(chunkify(songs_json, 100))
-
+#
 
     for i, s in enumerate(songs_json['songs']):
         s_id = s['spotify_id']
         safu =spotify_audio_features_url+s_id
-        af_data = requests.get(safu, headers=authorization_header)
-        try:
-            af_data.raise_for_status()
-        except requests.exceptions.RequestException as e:
-            songs_json['songs'][i]['af_data'].append(e)
-
-        af_data = af_data.json()
-        songs_json['songs'][i]['af_data'].append(af_data['audio_features'])
-        print(af_data)
+        af_data = requests.get(safu, headers=authorization_header).json()
+        songs_json['songs'][i]['af_data'].append(af_data)
 
 # Data Request 1 of 2 - not needed for v1
     # limit = 50
