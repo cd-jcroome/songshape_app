@@ -97,8 +97,6 @@
     chartSpace.selectAll("#mthdText").remove();
     chartSpace.selectAll("#welcomeText").remove();
 
-    activelink('homelnk')
-
     let welcomeText = d3
       .selectAll("#welcomeGroup")
       .append("g")
@@ -109,40 +107,41 @@
       .text("What does a song look like?")
       .attr("text-align", "left")
       .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(headerDuration)
       .style("opacity", "1")
-      .style("transform", "translate(0,"+(windowHeight / 2)+"px)");
-
-    welcomeText
+      
+      welcomeText
       .append("p")
       .text(
         "That's the riddle we set out to answer with this project. Through many different trials and iterations, this site is our attempt to share what we found with you. \n\nScroll down to begin."
-      )
-      .attr("text-align", "left")
-      .style("opacity", "0")
-      .transition()
-      .duration(textDuration)
-      .style("opacity", "1");
-  }
+        )
+        .attr("text-align", "left")
+        .style("opacity", "0")
+        .style("transform", `translate(0px,${stepHeight / 2}px)`)
+        .transition()
+        .duration(textDuration)
+        .style("opacity", "1");
+        
+
+      }
 
   function methodology() {
     chartSpace.selectAll("#welcomeText").remove();
     chartSpace.selectAll("#legendText").remove();
     chartSpace.selectAll("#mthdText").remove();
 
-    activelink('mthdlnk')
-
     let mthdText = d3
       .selectAll("#mthdGroup")
       .append("g")
-      .attr("id", "mthdText")
-      .style("transform", `translate(0,${windowHeight / 2}px)`);
+      .attr("id", "mthdText");
 
     mthdText
       .append("h1")
       .text("Methodology")
       .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(headerDuration)
       .style("opacity", "1");
@@ -151,6 +150,7 @@
       .append("p")
       .text("Here's where we'll discuss our methodology and whatnot.")
       .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(textDuration)
       .style("opacity", "1");
@@ -160,18 +160,16 @@
     chartSpace.selectAll("#mthdText").remove();
     chartSpace.selectAll("#legendText").remove();
 
-    activelink('lgndlnk')
-
     let legendText = d3
       .selectAll("#legendGroup")
       .append("g")
-      .attr("id", "legendText")
-      .style("transform", `translate(0,${windowHeight / 2}px)`);
+      .attr("id", "legendText");
 
     legendText
       .append("h1")
       .text("Legend")
       .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(headerDuration)
       .style("opacity", "1");
@@ -180,6 +178,7 @@
       .append("p")
       .text("Here's where we'll explain how to understand the viz.")
       .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(textDuration)
       .style("opacity", "1");
@@ -188,54 +187,53 @@
   function about() {
     chartSpace.selectAll("#aboutText").remove();
 
-    activelink('abtlnk')
-
+    
     let aboutText = d3
-      .selectAll("#aboutGroup")
-      .append("g")
-      .attr("id", "aboutText")
-      .style("transform", `translate(0,${windowHeight / 2}px)`);
-
+    .selectAll("#aboutGroup")
+    .append("g")
+    .attr("id", "aboutText");
+    
     aboutText
-      .append("h1")
-      .text("About our Team")
-      .style("opacity", "0")
-      .transition()
-      .duration(headerDuration)
-      .style("opacity", "1");
-
+    .append("h1")
+    .text("About our Team")
+    .style("opacity", "0")
+    .style("transform", `translate(0px,${stepHeight / 2}px)`)
+    .transition()
+    .duration(headerDuration)
+    .style("opacity", "1");
+    
     aboutText
-      .append("p")
-      .text("Here's where we'll brag on ourselves a little bit (or a lot!).")
-      .style("opacity", "0")
-      .transition()
-      .duration(textDuration)
-      .style("opacity", "1");
+    .append("p")
+    .text("Here's where we'll brag on ourselves a little bit (or a lot!).")
+    .style("opacity", "0")
+    .style("transform", `translate(0px,${stepHeight / 2}px)`)
+    .transition()
+    .duration(textDuration)
+    .style("opacity", "1");
   }
-
+  
   function handleStepEnter(response) {
     // response = { element, direction, index }
     switch (response.index) {
       case 0: // welcome
-        console.log("welcome");
+        activelink('homelnk')
         welcome();
-        break; 
+      break; 
       case 1:// methodology
-        console.log("methodology");
+        activelink('mthdlnk')
         methodology();
-        break; 
+      break; 
       case 2:// legend
-        console.log("legend");
+        activelink('lgndlnk')
         legend();
-        break; 
+      break; 
       case 3:// universe viz
-        console.log("universe");
         activelink('xplrlnk')
-        break;
+      break;
       case 4:
-        console.log("about");
+        activelink('abtlnk')
         about();
-        break;
+      break;
     }
   }
 

@@ -9,7 +9,7 @@
     return allSongs;
   })
     .then(allSongs => {
-      allSongs = allSongs;
+      allSongs = allSongs['songs'];
       drawStuff(allSongs);
     })
     .catch(err => console.error(err));
@@ -30,7 +30,7 @@
       .html(d => {
         return `<a href="/detail/${d["spotify_id"]}"
           </a>
-          ${d["song_title"]}, by ${d["artist"]}`;
+          ${d["track_name"]}, by ${d["artist"]}`;
       });
   }
 })();
