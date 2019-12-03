@@ -1,0 +1,2 @@
+key = '6b58815e509940539428705cce2b1d14'
+secret_key = 'fed393d5a9b846e5a8b9f7e3139f8d63'
