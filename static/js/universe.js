@@ -8,7 +8,7 @@
     return allSongs;
   })
     .then(allSongs => {
-      allSongs = allSongs['songs'];
+      allSongs = allSongs;
       drawStuff(allSongs);
     })
     .catch(err => console.error(err));

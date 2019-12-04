@@ -28,15 +28,15 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://eeisesngobgpmw:022a760c5e2a14fb950fc580e699168d321a7c5ee2e6a23bf6a63e7857ad09f1@ec2-54-225-173-42.compute-1.amazonaws.com:5432/dbdslcdkv11cgu'    
 
 
-def randomword(length):
-    letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(length))
+# def randomword(length):
+#     letters = string.ascii_lowercase
+#     return ''.join(random.choice(letters) for i in range(length))
 
 scopes = 'user-library-read'
-oauth_data = {'scope':scopes,'client_id':spotify_key,'redirect_uri':redirect_uri, 'response_type':'code', 'state':str(randomword(8))}
-url_args = "&".join(["{}={}".format(key,quote(val)) for key, val in oauth_data.items()])
+# oauth_data = {'scope':scopes,'client_id':spotify_key,'redirect_uri':redirect_uri, 'response_type':'code', 'state':str(randomword(8))}
+# url_args = "&".join(["{}={}".format(key,quote(val)) for key, val in oauth_data.items()])
 
-spotify_auth_url = 'https://accounts.spotify.com/authorize/?'+'{}'.format(url_args)
+# spotify_auth_url = 'https://accounts.spotify.com/authorize/?'+'{}'.format(url_args)
 spotify_token_url = 'https://accounts.spotify.com/api/token'
 spotify_audio_features_url = 'https://api.spotify.com/v1/audio-features/'
 spotify_audio_analysis_url = 'https://api.spotify.com/v1/audio-analysis/'
@@ -89,12 +89,34 @@ def load_metadata():
         artist = sd['artist']
         songs_json['songs'].append({'track_name':track_name,'artist':artist,'data_name':data_name,'spotify_id':spotify_id,'af_data':[],'track_data':[],'artist_data':[]})
 
-    sid_json = []
+    sid_list = []
     for sid in songs:
         sd = sid.__dict__
         sp_id = sd['spotify_id']
-        sid.append(sp_id)
-    print(sid_json)
+        sid_list.append(sp_id)
+
+    sid_list_arg = str(sid_list).replace("'","").replace(" ","").replace("[","").replace("]","")
+
+    tracks_data = requests.get(spotify_tracks_url,params={'ids':sid_list_arg},headers=authorization_header).json()
+
+    af_data = requests.get(spotify_audio_features_url, params={'ids':sid_list_arg},headers=authorization_header).json()
+
+    artist_list = []
+    for trk in tracks_data['tracks']:
+        aid = trk['artists'][0]['id']
+        artist_list.append(aid)
+    print(artist_list)
+    
+    art_list_arg = str(artist_list).replace("'","").replace(" ","").replace("[","").replace("]","")
+
+    art_data = requests.get(spotify_artists_url, params={'ids':art_list_arg},headers=authorization_header).json()
+
+    for i, t in enumerate(tracks_data['tracks']):
+        tracks_data['tracks'][i]['artist'] = []
+        tracks_data['tracks'][i]['af_data'] = []
+
+        tracks_data['tracks'][i]['artist'].append(art_data['artists'][i])
+        tracks_data['tracks'][i]['af_data'].append(af_data['audio_features'][i])
 
 # # Handle large list of songs (once there are over 100, queries need to be paginated)
     # def chunkify(l,n):
@@ -103,20 +125,18 @@ def load_metadata():
     # songs_list = list(chunkify(songs_json, 100))
 #
 
-    for i, s in enumerate(songs_json['songs']):
-        t_id = s['spotify_id']
-        safu =spotify_audio_features_url+t_id
-        af_data = requests.get(safu, headers=authorization_header).json()
-        songs_json['songs'][i]['af_data'].append(af_data)
+    # for i, s in enumerate(songs_json['songs']):
+    #     t_id = s['spotify_id']
+    #     safu =spotify_audio_features_url+t_id
+    #     songs_json['songs'][i]['af_data'].append(af_data)
 
-        stu = spotify_tracks_url+t_id
-        tk_data = requests.get(stu, headers=authorization_header).json()
-        songs_json['songs'][i]['track_data'].append(tk_data)
+    #     stu = spotify_tracks_url+t_id
+    #     tk_data = requests.get(stu, headers=authorization_header).json()
+    #     songs_json['songs'][i]['track_data'].append(tk_data)
         
-        a_id = songs_json['songs'][i]['track_data'][0]['artists'][0]['id']
-        sau = spotify_artists_url+a_id
-        art_data = requests.get(sau, headers=authorization_header).json()
-        songs_json['songs'][i]['artist_data'].append(art_data)
+    #     a_id = songs_json['songs'][i]['track_data']
+    #     sau = spotify_artists_url+a_id
+    #     songs_json['songs'][i]['artist_data'].append(art_data)
 
 # Data Request 1 of 2 - not needed for v1
     # limit = 50
@@ -129,7 +149,7 @@ def load_metadata():
     #     user_tracks = requests.get(user_tracks['next'], headers=authorization_header, params={'limit':limit}).json()
     #     tracks_json.extend(user_tracks['items'])
 #
-    return jsonify(songs_json)
+    return jsonify(tracks_data)
 
 # load_songdata route (for universe vis)
 @app.route('/load_songdata/<spotify_id>',methods=['GET','POST'])
