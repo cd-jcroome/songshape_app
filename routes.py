@@ -41,6 +41,8 @@ spotify_token_url = 'https://accounts.spotify.com/api/token'
 spotify_audio_features_url = 'https://api.spotify.com/v1/audio-features/'
 spotify_audio_analysis_url = 'https://api.spotify.com/v1/audio-analysis/'
 spotify_user_tracks_url = 'https://api.spotify.com/v1/me/tracks'
+spotify_tracks_url = 'https://api.spotify.com/v1/tracks/'
+spotify_artists_url = 'https://api.spotify.com/v1/artists/'
 
 
 
@@ -85,7 +87,14 @@ def load_metadata():
         spotify_id = sd['spotify_id']
         track_name = sd['song_title']
         artist = sd['artist']
-        songs_json['songs'].append({'track_name':track_name,'artist':artist,'data_name':data_name,'spotify_id':spotify_id,'af_data':[]})
+        songs_json['songs'].append({'track_name':track_name,'artist':artist,'data_name':data_name,'spotify_id':spotify_id,'af_data':[],'track_data':[],'artist_data':[]})
+
+    sid_json = []
+    for sid in songs:
+        sd = sid.__dict__
+        sp_id = sd['spotify_id']
+        sid.append(sp_id)
+    print(sid_json)
 
 # # Handle large list of songs (once there are over 100, queries need to be paginated)
     # def chunkify(l,n):
@@ -95,10 +104,19 @@ def load_metadata():
 #
 
     for i, s in enumerate(songs_json['songs']):
-        s_id = s['spotify_id']
-        safu =spotify_audio_features_url+s_id
+        t_id = s['spotify_id']
+        safu =spotify_audio_features_url+t_id
         af_data = requests.get(safu, headers=authorization_header).json()
         songs_json['songs'][i]['af_data'].append(af_data)
+
+        stu = spotify_tracks_url+t_id
+        tk_data = requests.get(stu, headers=authorization_header).json()
+        songs_json['songs'][i]['track_data'].append(tk_data)
+        
+        a_id = songs_json['songs'][i]['track_data'][0]['artists'][0]['id']
+        sau = spotify_artists_url+a_id
+        art_data = requests.get(sau, headers=authorization_header).json()
+        songs_json['songs'][i]['artist_data'].append(art_data)
 
 # Data Request 1 of 2 - not needed for v1
     # limit = 50
