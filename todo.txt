@@ -1,0 +1,6 @@
+_ 1 reconnect oauth
+    _ 1.1 add callback route
+    _ 1.2 get songlist
+    _ 1.3 add additional get for songs when user has no spotify account
+    _ 1.4 add login page
+_ 2 help with js
