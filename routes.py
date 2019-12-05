@@ -40,11 +40,10 @@ def randomword(length):
     return ''.join(random.choice(letters) for i in range(length))
 
 scopes = 'user-library-read'
-# oauth_data = {'scope':scopes,'client_id':spotify_key,'redirect_uri':redirect_uri, 'response_type':'code', 'state':str(randomword(8))}
-# url_args = "&".join(["{}={}".format(key,quote(val)) for key, val in oauth_data.items()])
+oauth_data = {'scope':scopes,'client_id':spotify_key,'redirect_uri':redirect_uri, 'response_type':'code', 'state':str(randomword(8))}
+url_args = "&".join(["{}={}".format(key,quote(val)) for key, val in oauth_data.items()])
 
-# spotify_auth_url = 'https://accounts.spotify.com/authorize/?'+'{}'.format(url_args)
-spotify_auth_url = 'https://accounts.spotify.com/authorize'
+spotify_auth_url = 'https://accounts.spotify.com/authorize/?'+'{}'.format(url_args)
 spotify_token_url = 'https://accounts.spotify.com/api/token'
 spotify_audio_features_url = 'https://api.spotify.com/v1/audio-features/'
 spotify_audio_analysis_url = 'https://api.spotify.com/v1/audio-analysis/'
@@ -130,8 +129,7 @@ def load_metadata():
 
 
     limit = 50
-    user_tracks = spotify.get(spotify_user_tracks_url, params={'limit':limit,'scopes':scopes}).json()
-    print(user_tracks)
+    user_tracks = spotify.get(spotify_user_tracks_url, params={'limit':limit}).json()
     num_calls = math.ceil(user_tracks['total']/limit)
 
     tracks_data = user_tracks['items']
@@ -140,6 +138,12 @@ def load_metadata():
         user_tracks = spotify.get(user_tracks['next'], params={'limit':limit}).json()
         tracks_data.extend(user_tracks['items'])
 
+# Handle large list of songs (once there are over 100, queries need to be paginated)
+    def chunkify(l,n):
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+    songs_list = list(chunkify(songs_json, 100))
+#
 # Data Request 2 of 2
     # track_list = []
     # af_data = []
@@ -163,12 +167,6 @@ def load_metadata():
     #     tracks_data['tracks'][i]['artist'].append(art_data['artists'][i])
     #     tracks_data['tracks'][i]['af_data'].append(af_data['audio_features'][i])
 
-# # Handle large list of songs (once there are over 100, queries need to be paginated)
-    # def chunkify(l,n):
-    #     for i in range(0, len(l), n):
-    #         yield l[i:i + n]
-    # songs_list = list(chunkify(songs_json, 100))
-#
 
     # for i, s in enumerate(songs_json['songs']):
     #     t_id = s['spotify_id']
@@ -183,17 +181,6 @@ def load_metadata():
     #     sau = spotify_artists_url+a_id
     #     songs_json['songs'][i]['artist_data'].append(art_data)
 
-# Data Request 1 of 2 - not needed for v1
-    # limit = 50
-    # user_tracks = requests.get(spotify_user_tracks_url, headers=authorization_header, params={'limit':limit}).json()
-    # num_calls = math.ceil(user_tracks['total']/limit)
-
-    # tracks_json = user_tracks['items']
-    
-    # while user_tracks['next']:
-    #     user_tracks = requests.get(user_tracks['next'], headers=authorization_header, params={'limit':limit}).json()
-    #     tracks_json.extend(user_tracks['items'])
-#
     return jsonify(tracks_data)
 
 # load_songdata route (for universe vis)
