@@ -16,7 +16,7 @@ from urllib.request import urlopen
 from requests_oauthlib import OAuth2Session
 
 # for transforming data
-from librosa import load, effects, cqt
+from librosa import load, effects, cqt, core
 import numpy as np
 import pandas as pd
 
@@ -63,11 +63,15 @@ db.init_app(app)
 @app.route('/login')
 @app.route('/')
 def authenticate():
-    spotify = OAuth2Session(spotify_key, redirect_uri=redirect_uri)
-    authorization_url, state = spotify.authorization_url(spotify_auth_url)
-    # State is used to prevent CSRF, keep this for later.
-    session['oauth_state'] = state
-    return redirect(authorization_url)
+    if 'oauth_key' in session:
+        print(session)
+        return redirect(url_for('index'))
+    else:
+        spotify = OAuth2Session(spotify_key, redirect_uri=redirect_uri)
+        authorization_url, state = spotify.authorization_url(spotify_auth_url)
+        # State is used to prevent CSRF, keep this for later.
+        session['oauth_state'] = state
+        return redirect(authorization_url)
 
 
 @app.route('/index')
@@ -166,15 +170,18 @@ def load_metadata():
 # load_songdata route (for detail vis)
 @app.route('/load_songdata/<spotify_id>', methods=['GET', 'POST'])
 def load_songdata(spotify_id):
-    spotify = OAuth2Session(
-        spotify_key, token=session['oauth_token'], redirect_uri=redirect_uri)
+    post_data = {
+        'grant_type':'client_credentials',
+        'client_id':spotify_key,
+        'client_secret':spotify_secret_key
+    }
+    access_token = json.loads(requests.post(spotify_token_url,data=post_data).text)['access_token']
+    auth_header = {'Authorization':f'Bearer {access_token}'}
 
-    filepath = os.path.join(os.path.dirname(__file__),
-                            'static/data/midi_metadata.csv')
+    filepath = os.path.join(os.path.dirname(__file__),'static/data/midi_metadata.csv')
     notes = pd.read_csv(filepath)
 
-    track_info = spotify.get(spotify_tracks_url+spotify_id).json()
-
+    track_info = requests.get(spotify_tracks_url+spotify_id, headers=auth_header).json()
     if track_info['preview_url']:
         preview_url = track_info['preview_url']
         song_url = os.path.join(track_info['preview_url'].split('?')[
@@ -182,25 +189,29 @@ def load_songdata(spotify_id):
 
         sample_30s = urlopen(song_url)
 
-        with open('./test.mp3', 'wb') as output:
+        with open('./static/data/output.mp3', 'wb') as output:
             output.write(sample_30s.read())
 
         mp3_filepath = os.path.join(os.path.dirname(__file__),
-                                    'test.mp3')
+                                    'static/data/output.mp3')
         y, sr = load(mp3_filepath)
+        duration = core.get_duration(y=y, sr=sr)
         # split out the harmonic and percussive audio
         y_harmonic = effects.hpss(y)[0]
         # map out the values into an array
-        cqt_h = np.abs(cqt(y_harmonic, sr=sr, n_bins=128,
-                           fmin=6, bins_per_octave=12))
+        cqt_h = np.abs(cqt(y_harmonic, sr=sr, fmin = 16.35, n_bins = 108, bins_per_octave=12))
         c_df_h = pd.DataFrame(notes).join(pd.DataFrame(cqt_h), lsuffix='n').melt(
-            id_vars={'MIDI Note', 'Octave', 'Note'}).rename(columns={'variable': 'time'})
-        c_df_h_final = c_df_h.to_csv()
+            id_vars={'MIDI Note', 'Octave', 'Note'}).rename(columns={'variable': 'note_time','Octave':'octave','Note':'note_name','value':'magnitude'})
+        # Time transformation
+        time_int = duration / cqt_h.shape[1]
+        c_df_h['note_time'] = c_df_h['note_time'] * time_int * 1000
+
+        song_data = c_df_h.to_csv(index=False)
 
     else:
-        c_df_h_final = 'Oh No! No Audio Data available :('
+        song_data = jsonify(track_info)
 
-    return (c_df_h_final, track_info)
+    return(song_data)
 
 
 if __name__ == "__main__":

@@ -3,13 +3,62 @@
   <div class="inner">
     <h1 class="masthead-brand">AudioForma</h1>
     <nav class="nav nav-masthead justify-content-center">
-        <form action="/index" method="GET">
-            <button type="submit">Home</button>
-          </form>
+      <form action="/" method="GET">
+        <button type="submit">Home</button>
+      </form>
     </nav>
   </div>
 </header>
-<section id="chart">
-</section>
+<div class="flex-container">
+  <div>
+    <video id="my-media">
+      <source type="audio/mp3" />
+    </video>
+
+    <button type="button" id="start" class="bubu-button">start</button>
+
+    <table id="music-info">
+      <tr>
+        <td>
+          <label>frame rate per second (FPS)</label>
+        </td>
+        <td>
+          <p id="fps"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label>time elapsed [second]</label>
+        </td>
+        <td>
+          <p id="time-elapsed"></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label>music length [second]</label>
+        </td>
+        <td>
+          <p id="music-length"></p>
+        </td>
+      </tr>
+    </table>
+
+    <div>
+      <input type="checkbox" id="my-check-box" />
+      Show absolute value on Y axis
+    </div>
+  </div>
+
+  <div>
+    <div id="plot-div"></div>
+  </div>
+
+  <div>
+    <div id="legend-div"></div>
+  </div>
+</div>
 <script src="../static/js/detail.js"></script>
 {% endblock %}
