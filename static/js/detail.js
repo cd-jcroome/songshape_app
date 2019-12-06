@@ -5,9 +5,9 @@
   const chartSpace = d3.select("#chart");
   const spotify_id = this.location.pathname.replace("/detail/", "");
 
-  let notes = [];
+  let song_data = [];
 
-  d3.json(`/load_songdata/${spotify_id}`, d => {
+  d3.csv(`/load_songdata/${spotify_id}`, d => {
     song_data = d;
     return song_data;
   })

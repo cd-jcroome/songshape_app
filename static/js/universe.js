@@ -27,9 +27,9 @@
       .enter()
       .append("text")
       .html(d => {
-        return ` <a href="/detail/${d["spotify_id"]}"
+        return ` <a href="/detail/${d["track"]["id"]}"
           </a>
-          ${d["track_name"]}, by ${d["artist"]}`;
+          ${d["track"]["name"]}, by ${d["artist"][0]["name"]}`;
       });
   }
 })();
