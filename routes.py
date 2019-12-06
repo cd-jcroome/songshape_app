@@ -16,7 +16,7 @@ from urllib.request import urlopen
 from requests_oauthlib import OAuth2Session
 
 # for transforming data
-from librosa import load, effects, cqt, core
+import librosa
 import numpy as np
 import pandas as pd
 
@@ -194,12 +194,12 @@ def load_songdata(spotify_id):
 
         mp3_filepath = os.path.join(os.path.dirname(__file__),
                                     'static/data/output.mp3')
-        y, sr = load(mp3_filepath)
-        duration = core.get_duration(y=y, sr=sr)
+        y, sr = librosa.load(mp3_filepath)
+        duration = librosa.core.get_duration(y=y, sr=sr)
         # split out the harmonic and percussive audio
-        y_harmonic = effects.hpss(y)[0]
+        y_harmonic = librosa.effects.hpss(y)[0]
         # map out the values into an array
-        cqt_h = np.abs(cqt(y_harmonic, sr=sr, fmin = 16.35, n_bins = 108, bins_per_octave=12))
+        cqt_h = np.abs(librosa.cqt(y_harmonic, sr=sr, fmin = 16.35, n_bins = 108, bins_per_octave=12))
         c_df_h = pd.DataFrame(notes).join(pd.DataFrame(cqt_h), lsuffix='n').melt(
             id_vars={'MIDI Note', 'Octave', 'Note'}).rename(columns={'variable': 'note_time','Octave':'octave','Note':'note_name','value':'magnitude'})
         # Time transformation
