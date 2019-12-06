@@ -39,10 +39,6 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://eeisesngobgpmw:022a760c5e2a14fb950fc580e699168d321a7c5ee2e6a23bf6a63e7857ad09f1@ec2-54-225-173-42.compute-1.amazonaws.com:5432/dbdslcdkv11cgu'
 
 
-# def randomword(length):
-#     letters = string.ascii_lowercase
-#     return ''.join(random.choice(letters) for i in range(length))
-
 scopes = 'user-library-read'
 oauth_data = {'scope': scopes, 'client_id': spotify_key,
               'redirect_uri': redirect_uri, 'response_type': 'code'}
@@ -52,8 +48,9 @@ url_args = "&".join(["{}={}".format(key, quote(val))
 spotify_auth_url = 'https://accounts.spotify.com/authorize/?' + \
     '{}'.format(url_args)
 spotify_token_url = 'https://accounts.spotify.com/api/token'
+# spotify_audio_analysis_url = 'https://api.spotify.com/v1/audio-analysis/'
+
 spotify_audio_features_url = 'https://api.spotify.com/v1/audio-features/'
-spotify_audio_analysis_url = 'https://api.spotify.com/v1/audio-analysis/'
 spotify_user_tracks_url = 'https://api.spotify.com/v1/me/tracks'
 spotify_tracks_url = 'https://api.spotify.com/v1/tracks/'
 spotify_artists_url = 'https://api.spotify.com/v1/artists/'
@@ -64,6 +61,7 @@ db.init_app(app)
 
 # index route
 @app.route('/login')
+@app.route('/')
 def authenticate():
     spotify = OAuth2Session(spotify_key, redirect_uri=redirect_uri)
     authorization_url, state = spotify.authorization_url(spotify_auth_url)
@@ -178,6 +176,7 @@ def load_songdata(spotify_id):
     track_info = spotify.get(spotify_tracks_url+spotify_id).json()
 
     if track_info['preview_url']:
+        preview_url = track_info['preview_url']
         song_url = os.path.join(track_info['preview_url'].split('?')[
                                 0], '.mp3').replace('/.mp3', '.mp3')
 
@@ -201,7 +200,7 @@ def load_songdata(spotify_id):
     else:
         c_df_h_final = 'Oh No! No Audio Data available :('
 
-    return (c_df_h_final)
+    return (c_df_h_final, track_info)
 
 
 if __name__ == "__main__":
