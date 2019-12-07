@@ -1,0 +1,77 @@
+body {
+  font-size: 1.5vw;
+  font-family: "Roboto";
+  background: #fff;
+}
+
+#my-media {
+  width: 100%;
+  height: auto;
+  margin-left: 30px;
+}
+
+.bubu-button {
+  background-color: #ddd;
+  border: none;
+  color: #333;
+  font-family: "Roboto";
+  padding: 10px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 2vw;
+}
+
+.bubu-button:disabled {
+  background-color: #ccc;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* tr:nth-child(odd) {
+    background-color: #BAB2B5;
+}
+ */
+.flex-container {
+  display: flex;
+  text-align: center;
+}
+
+.flex-container div {
+  flex-basis: 25%;
+}
+
+div * {
+  margin: 10px;
+}
+
+#plot-div {
+  width: 100%;
+  padding-left: 70px;
+}
+
+#legend-div {
+  width: 100%;
+  height: 100%;
+}
+
+.myXAxis line {
+  stroke: none;
+  fill: none;
+}
+
+.myXAxis path {
+  stroke: none;
+  fill: none;
+}
+
+.myXAxis text {
+  display: none;
+}
+
+.axisLabel {
+  fill: #8e8d8a;
+}

@@ -189,11 +189,11 @@ def load_songdata(spotify_id):
 
         sample_30s = urlopen(song_url)
 
-        with open('./static/data/output.mp3', 'wb') as output:
+        with open(f'./static/data/{spotify_id}.mp3', 'wb') as output:
             output.write(sample_30s.read())
 
         mp3_filepath = os.path.join(os.path.dirname(__file__),
-                                    'static/data/output.mp3')
+                                    f'static/data/{spotify_id}.mp3')
         y, sr = librosa.load(mp3_filepath)
         duration = librosa.core.get_duration(y=y, sr=sr)
         # split out the harmonic and percussive audio
