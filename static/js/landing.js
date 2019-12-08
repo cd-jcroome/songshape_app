@@ -41,8 +41,8 @@
       .attr("id", "welcomeGroup")
       .attr("class", "step")
       .attr("data-step", "a")
-      .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`)
+      .attr("height", `${stepHeight}`)
+      .attr("width", `${stepWidth}`);
 
     chartSpace
       .append("a")
@@ -51,8 +51,8 @@
       .attr("id", "mthdGroup")
       .attr("class", "step")
       .attr("data-step", "b")
-      .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`)
+      .attr("height", `${stepHeight}`)
+      .attr("width", `${stepWidth}`);
 
     chartSpace
       .append("a")
@@ -61,9 +61,8 @@
       .attr("id", "legendGroup")
       .attr("class", "step")
       .attr("data-step", "c")
-      .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`)
-      ;
+      .attr("height", `${stepHeight}`)
+      .attr("width", `${stepWidth}`);
 
     chartSpace
       .append("a")
@@ -72,9 +71,34 @@
       .attr("id", "universeGroup")
       .attr("class", "step")
       .attr("data-step", "d")
-      .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`)
-      ;
+      .attr("height", `${stepHeight}`)
+      .attr("width", `${stepWidth}`)
+      // add browse-by filter
+      .append("form")
+      .attr("class", "form-inline")
+      .append("div")
+      .attr("class", "form-group")
+      .append("label")
+      .attr("for", "browseType")
+      .text("Browse By")
+      .append("select")
+      .attr("class", "form-control")
+      .attr("id", "browse-type")
+      .style("transform", "translate(0,50px)");
+    // add options to filter
+    var selector = d3.select("#browse-type");
+    selector
+      .append("option")
+      .attr("value", "song")
+      .text("Song");
+    selector
+      .append("option")
+      .attr("value", "artist")
+      .text("Artist");
+    selector
+      .append("option")
+      .attr("value", "genre")
+      .text("Genre");
 
     chartSpace
       .append("a")
@@ -83,15 +107,14 @@
       .attr("id", "aboutGroup")
       .attr("class", "step")
       .attr("data-step", "d")
-      .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`)
+      .attr("height", `${stepHeight}`)
+      .attr("width", `${stepWidth}`);
   }
 
-  function activelink(linkName){
-    d3.selectAll(".active").classed("active",false)
-    var linkName = d3.selectAll(`#${linkName}`)
-    linkName.classed("active", !linkName.classed("active"))
-
+  function activelink(linkName) {
+    d3.selectAll(".active").classed("active", false);
+    var linkName = d3.selectAll(`#${linkName}`);
+    linkName.classed("active", !linkName.classed("active"));
   }
 
   function welcome() {
@@ -101,9 +124,9 @@
     let welcomeText = d3
       .selectAll("#welcomeGroup")
       .append("g")
-      .attr("id", "welcomeText")
-      
-      welcomeText
+      .attr("id", "welcomeText");
+
+    welcomeText
       .append("h2")
       .text("What does a song look like?")
       .attr("text-align", "left")
@@ -111,22 +134,20 @@
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(headerDuration)
-      .style("opacity", "1")
-      
-      welcomeText
+      .style("opacity", "1");
+
+    welcomeText
       .append("p")
       .text(
         "That's the riddle we set out to answer with this project. Through many different trials and iterations, this site is our attempt to share what we found with you. \n\nScroll down to begin."
-        )
-        .attr("text-align", "left")
-        .style("opacity", "0")
-        .style("transform", `translate(0px,${stepHeight / 2}px)`)
-        .transition()
-        .duration(textDuration)
-        .style("opacity", "1");
-        
-
-      }
+      )
+      .attr("text-align", "left")
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .transition()
+      .duration(textDuration)
+      .style("opacity", "1");
+  }
 
   function methodology() {
     chartSpace.selectAll("#welcomeText").remove();
@@ -145,7 +166,7 @@
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(headerDuration)
-      .text("Methodology")
+      .text("Methodology");
 
     mthdText
       .append("p")
@@ -173,7 +194,7 @@
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(headerDuration)
-      .text("Legend")
+      .text("Legend");
 
     legendText
       .append("p")
@@ -188,58 +209,57 @@
   function about() {
     chartSpace.selectAll("#aboutText").remove();
 
-    
     let aboutText = d3
-    .selectAll("#aboutGroup")
-    .append("g")
-    .attr("id", "aboutText");
-    
+      .selectAll("#aboutGroup")
+      .append("g")
+      .attr("id", "aboutText");
+
     aboutText
-    .append("h2")
-    .text("About our Team")
-    .style("opacity", "0")
-    .style("transform", `translate(0px,${stepHeight / 2}px)`)
-    .transition()
-    .duration(headerDuration)
-    .style("opacity", "1");
-    
+      .append("h2")
+      .text("About our Team")
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .transition()
+      .duration(headerDuration)
+      .style("opacity", "1");
+
     aboutText
-    .append("p")
-    .text("Here's where we'll brag on ourselves a little bit (or a lot!).")
-    .style("opacity", "0")
-    .style("transform", `translate(0px,${stepHeight / 2}px)`)
-    .transition()
-    .duration(textDuration)
-    .style("opacity", "1");
+      .append("p")
+      .text("Here's where we'll brag on ourselves a little bit (or a lot!).")
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .transition()
+      .duration(textDuration)
+      .style("opacity", "1");
   }
-  
+
   function handleStepEnter(response) {
     // response = { element, direction, index }
     switch (response.index) {
       case 0: // welcome
-        activelink('homelnk')
+        activelink("homelnk");
         welcome();
-      break; 
-      case 1:// methodology
-        activelink('mthdlnk')
+        break;
+      case 1: // methodology
+        activelink("mthdlnk");
         methodology();
-      break; 
-      case 2:// legend
-        activelink('lgndlnk')
+        break;
+      case 2: // legend
+        activelink("lgndlnk");
         legend();
-      break; 
-      case 3:// universe viz
-        activelink('xplrlnk')
-      break;
+        break;
+      case 3: // universe viz
+        activelink("xplrlnk");
+        break;
       case 4:
-        activelink('abtlnk')
+        activelink("abtlnk");
         about();
-      break;
+        break;
     }
   }
 
   function setupStickyfill() {
-    d3.selectAll(".sticky").each(function () {
+    d3.selectAll(".sticky").each(function() {
       Stickyfill.add(this);
     });
   }

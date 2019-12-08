@@ -7,7 +7,7 @@
   let spotify_id = this.location.pathname.replace("/detail/", "");
 
   //let mediaName = "SevenNationArmy.mp3"
-  let mediaName = `../static/data/${spotify_id}.mp3`;
+  mediaName = `../static/data/${spotify_id}.mp3`;
 
   //------------------------------------------------------------
   // return an index such that csvData[0, index - 1] is used for visualization
