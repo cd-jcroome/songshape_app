@@ -1,7 +1,7 @@
 body {
   font-size: 1.5vw;
   font-family: "Roboto";
-  background: #fff;
+  background: #333;
 }
 
 #my-media {
@@ -11,9 +11,9 @@ body {
 }
 
 .bubu-button {
-  background-color: #ddd;
+  background-color: #333;
   border: none;
-  color: #333;
+  color: #ddd;
   font-family: "Roboto";
   padding: 10px 30px;
   text-align: center;

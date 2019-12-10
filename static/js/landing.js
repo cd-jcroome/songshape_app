@@ -3,8 +3,8 @@
   const scroller = scrollama();
   const chartSpace = d3.select("#scroll");
   const step = chartSpace.selectAll(".step");
-  const headerDuration = 300;
-  const textDuration = 400;
+  const headerDuration = 200;
+  const textDuration = 1000;
 
   let allSongs = [];
   let response = [];
@@ -41,8 +41,8 @@
       .attr("id", "welcomeGroup")
       .attr("class", "step")
       .attr("data-step", "a")
-      .attr("height", `${stepHeight}`)
-      .attr("width", `${stepWidth}`);
+      .style("height", `${stepHeight}px`)
+      .style("width", `${stepWidth}px`);
 
     chartSpace
       .append("a")
@@ -51,8 +51,8 @@
       .attr("id", "mthdGroup")
       .attr("class", "step")
       .attr("data-step", "b")
-      .attr("height", `${stepHeight}`)
-      .attr("width", `${stepWidth}`);
+      .style("height", `${stepHeight}px`)
+      .style("width", `${stepWidth}px`);
 
     chartSpace
       .append("a")
@@ -61,8 +61,8 @@
       .attr("id", "legendGroup")
       .attr("class", "step")
       .attr("data-step", "c")
-      .attr("height", `${stepHeight}`)
-      .attr("width", `${stepWidth}`);
+      .style("height", `${stepHeight}px`)
+      .style("width", `${stepWidth}px`);
 
     chartSpace
       .append("a")
@@ -73,7 +73,7 @@
       .attr("data-step", "d")
       .attr("height", `${stepHeight}`)
       .attr("width", `${stepWidth}`)
-      // add browse-by filter
+      // add browse-by selctor
       .append("form")
       .attr("class", "form-inline")
       .append("div")
@@ -85,20 +85,34 @@
       .attr("class", "form-control")
       .attr("id", "browse-type")
       .style("transform", "translate(0,50px)");
-    // add options to filter
-    var selector = d3.select("#browse-type");
-    selector
+    // add options to browse-by
+    var browseSelector = d3.select("#browse-type");
+    browseSelector
       .append("option")
       .attr("value", "song")
       .text("Song");
-    selector
+    browseSelector
       .append("option")
       .attr("value", "artist")
       .text("Artist");
-    selector
+    browseSelector
       .append("option")
       .attr("value", "genre")
       .text("Genre");
+
+    // add sort-by selector
+    chartSpace
+      .append("form")
+      .attr("class", "form-inline")
+      .append("div")
+      .attr("class", "form-group")
+      .append("label")
+      .attr("for", "sortType")
+      .text("Sort By")
+      .append("select")
+      .attr("class", "form-control")
+      .attr("id", "sort-type")
+      .style("transform", "translate(0,50px)");
 
     chartSpace
       .append("a")
@@ -107,8 +121,8 @@
       .attr("id", "aboutGroup")
       .attr("class", "step")
       .attr("data-step", "d")
-      .attr("height", `${stepHeight}`)
-      .attr("width", `${stepWidth}`);
+      .style("height", `${stepHeight}px`)
+      .style("width", `${stepWidth}px`);
   }
 
   function activelink(linkName) {
@@ -128,7 +142,7 @@
 
     welcomeText
       .append("h2")
-      .text("What does a song look like?")
+      .text("What is the Shape of a Song?")
       .attr("text-align", "left")
       .style("opacity", "0")
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
@@ -139,13 +153,23 @@
     welcomeText
       .append("p")
       .text(
-        "That's the riddle we set out to answer with this project. Through many different trials and iterations, this site is our attempt to share what we found with you. \n\nScroll down to begin."
+        "That's the riddle we set out to answer with this project. This site is our attempt to share what we found with you."
       )
       .attr("text-align", "left")
       .style("opacity", "0")
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
-      .duration(textDuration)
+      .duration(textDuration * 2)
+      .style("opacity", "1");
+
+    welcomeText
+      .append("p")
+      .text("Scroll down to begin.")
+      .attr("text-align", "left")
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .transition()
+      .duration(textDuration * 4)
       .style("opacity", "1");
   }
 
@@ -162,19 +186,71 @@
     mthdText
       .append("h2")
       .text("Methodology")
-      .style("opacity", "0")
+      .style("opacity", "1")
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(headerDuration)
-      .text("Methodology");
+      .style("opacity", "1");
 
     mthdText
       .append("p")
-      .text("Here's where we'll discuss our methodology and whatnot.")
+      .text(
+        "We start off by connecting with Spotify to query a user's library."
+      )
       .style("opacity", "0")
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(textDuration)
+      .style("opacity", "1");
+    mthdText
+      .append("p")
+      .text(
+        "After making a few API calls, we render the initial song metadata results using d3js."
+      )
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .transition()
+      .duration(textDuration * 2)
+      .style("opacity", "1");
+    mthdText
+      .append("p")
+      .text(
+        "These results answer the question posed above at a high level, but surely there's more insight to be found."
+      )
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .transition()
+      .duration(textDuration * 4)
+      .style("opacity", "1");
+    mthdText
+      .append("p")
+      .text(
+        "In addition to the metadata, Spotify provides access to 30s samples of many of their songs."
+      )
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .transition()
+      .duration(textDuration * 6)
+      .style("opacity", "1");
+    mthdText
+      .append("p")
+      .text(
+        'We process these samples using the python "Librosa" library, and present the final output to you, the viewer.'
+      )
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .transition()
+      .duration(textDuration * 8)
+      .style("opacity", "1");
+    mthdText
+      .append("p")
+      .text(
+        "Keep scrolling for a legend explaining how to read the visualizations."
+      )
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .transition()
+      .duration(textDuration * 10)
       .style("opacity", "1");
   }
 
@@ -194,7 +270,7 @@
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
       .duration(headerDuration)
-      .text("Legend");
+      .style("opacity", "1");
 
     legendText
       .append("p")
@@ -225,7 +301,7 @@
 
     aboutText
       .append("p")
-      .text("Here's where we'll brag on ourselves a little bit (or a lot!).")
+      .text("We are three individuals ")
       .style("opacity", "0")
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .transition()
@@ -279,7 +355,7 @@
         graphic: ".scroll__graphic",
         text: ".scroll__text",
         step: ".step",
-        debug: false
+        debug: true
       })
       // 3. bind scrollama event handlers (this can be chained like below)
       .onStepEnter(handleStepEnter);

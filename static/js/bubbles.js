@@ -92,6 +92,17 @@
 
       var radius = d3.scaleSqrt();
 
+      browseType == "song"
+        ? radius.domain([1, 1]).range([5, 5])
+        : radius
+            .domain(
+              d3.extent(function() {
+                return d.value;
+              })
+            )
+            .nice()
+            .range([5, 20]);
+
       // initialize force simulation
       var simulation = d3
         .forceSimulation()
@@ -100,7 +111,7 @@
         .force(
           "collide",
           d3.forceCollide(function(d) {
-            return radius(d.value) + 5;
+            return radius(d.value) + "vw";
           })
         );
 
@@ -145,7 +156,7 @@
         display_data = song;
 
         // scale radius (constant for song view)
-        radius.domain([1, 2]).range([20, 20]);
+        radius.domain([1, 1]).range([5, 5]);
       } else if (browseType == "artist") {
         // group data by artist
         var artist = d3
@@ -162,16 +173,6 @@
         console.log(artist.length);
 
         display_data = artist;
-
-        // scale radius by artist group size
-        radius
-          .domain(
-            d3.extent(artist, d => {
-              return d.value;
-            })
-          )
-          .nice()
-          .range([20, 100]);
       } else {
         // group data by genre
         var genre = d3
@@ -188,16 +189,6 @@
         console.log(genre.length);
 
         display_data = genre;
-
-        // scale radius by genre group size
-        radius
-          .domain(
-            d3.extent(genre, d => {
-              return d.value;
-            })
-          )
-          .nice()
-          .range([20, 100]);
       }
 
       // call force simulation
@@ -224,7 +215,7 @@
               .append("circle")
               .attr("class", "bubble")
               .attr("r", function(d) {
-                return radius(d.value);
+                return radius(d.value) + "vw";
               })
               .attr("fill", d => {
                 if (browseType == "song") {
@@ -238,7 +229,7 @@
           update =>
             update
               .attr("r", function(d) {
-                return radius(d.value);
+                return radius(d.value) + "vw";
               })
               .attr("fill", d => {
                 if (browseType == "song") {
