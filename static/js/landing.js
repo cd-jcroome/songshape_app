@@ -34,6 +34,7 @@
   }
 
   function buildSections() {
+    // welcome-----------------------------------------------------
     chartSpace
       .append("a")
       .attr("name", "welcome")
@@ -44,6 +45,28 @@
       .style("height", `${stepHeight}px`)
       .style("width", `${stepWidth}px`);
 
+    let welcomeText = d3.selectAll("#welcomeGroup").append("g");
+
+    welcomeText
+      .append("h2")
+      .attr("class", "welcomeText")
+      .text("What is the Shape of a Song?")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .style("opacity", "0");
+    welcomeText
+      .append("p")
+      .text(
+        "That's the riddle we set out to answer with this project. This site is our attempt to share what we found with you."
+      );
+    welcomeText.append("p").text("Scroll down to begin.");
+
+    welcomeText
+      .selectAll("p")
+      .attr("class", "welcomeText")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .style("opacity", "0");
+
+    // Methodology-----------------------------------------------------
     chartSpace
       .append("a")
       .attr("name", "methodology")
@@ -54,6 +77,30 @@
       .style("height", `${stepHeight}px`)
       .style("width", `${stepWidth}px`);
 
+    let mthdText = d3.selectAll("#mthdGroup").append("g");
+
+    mthdText
+      .append("h2")
+      .text("Methodology")
+      .style("transform", `translate(0px,${stepHeight / 8}px)`)
+      .attr("class", "mthdText");
+    mthdText
+      .append("p")
+      .text(
+        "We start off by connecting with Spotify to query a user's library. After making a few API calls, we render the initial song metadata results using d3js. These results answer the question posed above at a high level, but surely there's more insight to be found. In addition to the metadata, Spotify provides access to 30s samples of many of their songs. We process these samples using the python 'Librosa' library, and present the final output to you, the viewer."
+      );
+    mthdText
+      .append("p")
+      .text(
+        "Keep scrolling for a legend explaining how to read the visualizations."
+      );
+    mthdText
+      .selectAll("p")
+      .attr("class", "mthdText")
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 8}px)`);
+
+    // Legend-----------------------------------------------------
     chartSpace
       .append("a")
       .attr("name", "legend")
@@ -64,11 +111,28 @@
       .style("height", `${stepHeight}px`)
       .style("width", `${stepWidth}px`);
 
+    let legendText = d3.selectAll("#legendGroup").append("g");
+
+    legendText
+      .append("h2")
+      .text("Legend")
+      .style("transform", `translate(0px,${stepHeight / 8}px)`)
+      .style("opacity", "0")
+      .attr("class", "legendText");
+
+    legendText
+      .append("p")
+      .text("Here's where we'll explain how to understand the viz.")
+      .style("transform", `translate(0px,${stepHeight / 8}px)`)
+      .style("opacity", "0")
+      .attr("class", "legendText");
+
+    // Bubbles---------------------------------------------------
     chartSpace
       .append("a")
-      .attr("name", "universe")
+      .attr("name", "bubbles")
       .append("div")
-      .attr("id", "universeGroup")
+      .attr("id", "bubblesGroup")
       .attr("class", "step")
       .attr("data-step", "d")
       .attr("height", `${stepHeight}`)
@@ -113,7 +177,29 @@
       .attr("class", "form-control")
       .attr("id", "sort-type")
       .style("transform", "translate(0,50px)");
-
+    // add options to sort-by
+    var sortSelector = d3.select("#sort-type");
+    sortSelector
+      .append("option")
+      .attr("value", "default")
+      .text("Default");
+    sortSelector
+      .append("option")
+      .attr("value", "acousticness")
+      .text("Acousticness");
+    sortSelector
+      .append("option")
+      .attr("value", "danceability")
+      .text("Danceability");
+    sortSelector
+      .append("option")
+      .attr("value", "liveness")
+      .text("Liveness");
+    sortSelector
+      .append("option")
+      .attr("value", "energy")
+      .text("Energy");
+    // About---------------------------------------------------
     chartSpace
       .append("a")
       .attr("name", "about")
@@ -123,6 +209,22 @@
       .attr("data-step", "d")
       .style("height", `${stepHeight}px`)
       .style("width", `${stepWidth}px`);
+
+    let aboutText = d3.selectAll("#aboutGroup").append("g");
+
+    aboutText
+      .append("h2")
+      .text("About")
+      .style("transform", `translate(0px,${stepHeight / 8}px)`)
+      .style("opacity", "0")
+      .attr("class", "aboutText");
+
+    aboutText
+      .append("p")
+      .text("we are three individuals.")
+      .style("transform", `translate(0px,${stepHeight / 8}px)`)
+      .style("opacity", "0")
+      .attr("class", "aboutText");
   }
 
   function activelink(linkName) {
@@ -132,180 +234,78 @@
   }
 
   function welcome() {
-    chartSpace.selectAll("#mthdText").remove();
-    chartSpace.selectAll("#welcomeText").remove();
-
-    let welcomeText = d3
-      .selectAll("#welcomeGroup")
-      .append("g")
-      .attr("id", "welcomeText");
-
-    welcomeText
-      .append("h2")
-      .text("What is the Shape of a Song?")
-      .attr("text-align", "left")
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+    chartSpace
+      .selectAll(".welcomeText")
       .transition()
-      .duration(headerDuration)
       .style("opacity", "1");
-
-    welcomeText
-      .append("p")
-      .text(
-        "That's the riddle we set out to answer with this project. This site is our attempt to share what we found with you."
-      )
-      .attr("text-align", "left")
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+    chartSpace
+      .selectAll(".mthdText")
       .transition()
-      .duration(textDuration * 2)
-      .style("opacity", "1");
-
-    welcomeText
-      .append("p")
-      .text("Scroll down to begin.")
-      .attr("text-align", "left")
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".legendText")
       .transition()
-      .duration(textDuration * 4)
-      .style("opacity", "1");
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".aboutText")
+      .transition()
+      .style("opacity", "0");
   }
 
   function methodology() {
-    chartSpace.selectAll("#welcomeText").remove();
-    chartSpace.selectAll("#legendText").remove();
-    chartSpace.selectAll("#mthdText").remove();
-
-    let mthdText = d3
-      .selectAll("#mthdGroup")
-      .append("g")
-      .attr("id", "mthdText");
-
-    mthdText
-      .append("h2")
-      .text("Methodology")
-      .style("opacity", "1")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+    chartSpace
+      .selectAll(".welcomeText")
       .transition()
-      .duration(headerDuration)
-      .style("opacity", "1");
-
-    mthdText
-      .append("p")
-      .text(
-        "We start off by connecting with Spotify to query a user's library."
-      )
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".mthdText")
       .transition()
-      .duration(textDuration)
       .style("opacity", "1");
-    mthdText
-      .append("p")
-      .text(
-        "After making a few API calls, we render the initial song metadata results using d3js."
-      )
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+    chartSpace
+      .selectAll(".legendText")
       .transition()
-      .duration(textDuration * 2)
-      .style("opacity", "1");
-    mthdText
-      .append("p")
-      .text(
-        "These results answer the question posed above at a high level, but surely there's more insight to be found."
-      )
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".aboutText")
       .transition()
-      .duration(textDuration * 4)
-      .style("opacity", "1");
-    mthdText
-      .append("p")
-      .text(
-        "In addition to the metadata, Spotify provides access to 30s samples of many of their songs."
-      )
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
-      .transition()
-      .duration(textDuration * 6)
-      .style("opacity", "1");
-    mthdText
-      .append("p")
-      .text(
-        'We process these samples using the python "Librosa" library, and present the final output to you, the viewer.'
-      )
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
-      .transition()
-      .duration(textDuration * 8)
-      .style("opacity", "1");
-    mthdText
-      .append("p")
-      .text(
-        "Keep scrolling for a legend explaining how to read the visualizations."
-      )
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
-      .transition()
-      .duration(textDuration * 10)
-      .style("opacity", "1");
+      .style("opacity", "0");
   }
 
   function legend() {
-    chartSpace.selectAll("#mthdText").remove();
-    chartSpace.selectAll("#legendText").remove();
-
-    let legendText = d3
-      .selectAll("#legendGroup")
-      .append("g")
-      .attr("id", "legendText");
-
-    legendText
-      .append("h2")
-      .text("Legend")
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+    chartSpace
+      .selectAll(".welcomeText")
       .transition()
-      .duration(headerDuration)
-      .style("opacity", "1");
-
-    legendText
-      .append("p")
-      .text("Here's where we'll explain how to understand the viz.")
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".mthdText")
       .transition()
-      .duration(textDuration)
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".legendText")
+      .transition()
       .style("opacity", "1");
+    chartSpace
+      .selectAll(".aboutText")
+      .transition()
+      .style("opacity", "0");
   }
 
   function about() {
-    chartSpace.selectAll("#aboutText").remove();
-
-    let aboutText = d3
-      .selectAll("#aboutGroup")
-      .append("g")
-      .attr("id", "aboutText");
-
-    aboutText
-      .append("h2")
-      .text("About our Team")
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+    chartSpace
+      .selectAll(".welcomeText")
       .transition()
-      .duration(headerDuration)
-      .style("opacity", "1");
-
-    aboutText
-      .append("p")
-      .text("We are three individuals ")
-      .style("opacity", "0")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".mthdText")
       .transition()
-      .duration(textDuration)
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".legendText")
+      .transition()
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".aboutText")
+      .transition()
       .style("opacity", "1");
   }
 
@@ -324,7 +324,7 @@
         activelink("lgndlnk");
         legend();
         break;
-      case 3: // universe viz
+      case 3: // bubbles viz
         activelink("xplrlnk");
         break;
       case 4:
