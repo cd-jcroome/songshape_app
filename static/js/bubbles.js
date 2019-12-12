@@ -300,7 +300,9 @@
                     return this.color(this.genreScale(genreName));
                   }
                 }),
-            // .html(function(d){return `<a href="/detail/${d["track"]["id"]}">`})
+            // .attr("stroke-fill", d => {
+            //   return d["track"]["preview_url"] !== null ? "white" : "none";
+            // }),
             update =>
               update.attr("r", d => {
                 return this.radius(d.value) + "vw";
@@ -348,8 +350,7 @@
 
             this.updateViz();
           } else {
-            // this.browseType == "song"
-            // click out to detailed viz
+            window.location = `/detail/${d["track"]["id"]}`;
           }
         });
 
@@ -357,7 +358,7 @@
         this.simulation = d3
           .forceSimulation()
           .force("x", d3.forceX(this.width / 2).strength(0.05))
-          .force("y", d3.forceY(this.height / 1.5).strength(0.05))
+          .force("y", d3.forceY(this.height / 2).strength(0.05))
           .force(
             "collide",
             d3.forceCollide(d => {

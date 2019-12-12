@@ -52,6 +52,8 @@ body {
   position: fixed;
   width: 95vw;
   font-family: "Pacifico";
+  background-color: #222;
+  z-index: 100000;
 }
 
 .masthead-brand {
@@ -94,12 +96,13 @@ body {
 }
 
 /*
- * Cover
+ * Main
  */
-.cover {
+.scroll {
   padding: 0 1.5rem;
+  z-index: 0;
 }
-.cover .btn-lg {
+.scroll .btn-lg {
   padding: 0.75rem 1.25rem;
   font-weight: 700;
 }
