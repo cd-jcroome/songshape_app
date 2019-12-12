@@ -1,7 +1,9 @@
+/* selector reference: https://www.w3schools.com/cssref/css_selectors.asp */
+
 body {
   font-size: 1.5vw;
-  font-family: "Roboto";
-  background: #333;
+  font-family: "Pacifico", cursive;
+  background: #000000;
 }
 
 #my-media {
@@ -11,10 +13,10 @@ body {
 }
 
 .bubu-button {
-  background-color: #333;
+  background-color: #edc7b7;
   border: none;
-  color: #ddd;
-  font-family: "Roboto";
+  color: #ac3b61;
+  font-family: "Pacifico", cursive;
   padding: 10px 30px;
   text-align: center;
   text-decoration: none;
@@ -23,25 +25,26 @@ body {
 }
 
 .bubu-button:disabled {
-  background-color: #ccc;
+  background-color: #ff8888;
 }
 
 table {
-  width: 100%;
+  width: 20%;
   border-collapse: collapse;
 }
 
 /* tr:nth-child(odd) {
-    background-color: #BAB2B5;
+  background-color: #BAB2B5;
 }
- */
+*/
 .flex-container {
   display: flex;
   text-align: center;
+  margin-top: 10vh;
 }
 
 .flex-container div {
-  flex-basis: 25%;
+  flex-basis: 20%;
 }
 
 div * {

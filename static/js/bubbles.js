@@ -94,7 +94,7 @@
         this.svg = d3
           .select("#bubblesGroup")
           .append("svg")
-          .attr("height", this.height * 2)
+          .attr("height", this.height)
           .attr("width", this.width)
           .append("g")
           .attr("transform", "translate(0,0)");
@@ -150,7 +150,7 @@
       //------------------------------------------------------------
       //------------------------------------------------------------
       this.updateViz = () => {
-        this.radius = d3.scaleSqrt();
+        this.radius = d3.scaleLinear();
 
         // get user's "browse by" selection
         if (this.song_filter === false) {
@@ -176,7 +176,7 @@
             // console.log(this.display_data);
 
             // scale radius (constant for song view)
-            this.radius.domain([1, 1]).range([2, 2]);
+            this.radius.domain([1, 1]).range([0.5, 0.5]);
           } else if (this.browseType == "artist") {
             this.display_data = this.rawData;
 
@@ -205,7 +205,7 @@
                 })
               )
               .nice()
-              .range([2, 10]);
+              .range([0.5, 10]);
           } else {
             // this.browseType == "genre"
 
@@ -236,7 +236,7 @@
                 })
               )
               .nice()
-              .range([2, 10]);
+              .range([0.5, 10]);
           }
         }
         // ignore "browse by" selection
@@ -250,7 +250,7 @@
                 return d[this.sortType];
               })
             )
-            .range([2, 10]);
+            .range([0.5, 10]);
         }
 
         // remove all existing tooltips
@@ -299,9 +299,8 @@
                     let genreName = d["artist"][0]["genres"][0];
                     return this.color(this.genreScale(genreName));
                   }
-                })
-                // .html(function(d){return `<a href="/detail/${d["track"]["id"]}">`})
-                ,
+                }),
+            // .html(function(d){return `<a href="/detail/${d["track"]["id"]}">`})
             update =>
               update.attr("r", d => {
                 return this.radius(d.value) + "vw";
@@ -358,12 +357,12 @@
         this.simulation = d3
           .forceSimulation()
           .force("x", d3.forceX(this.width / 2).strength(0.05))
-          .force("y", d3.forceY(this.height / 2).strength(0.05))
+          .force("y", d3.forceY(this.height / 1.5).strength(0.05))
           .force(
             "collide",
             d3.forceCollide(d => {
               // responsive width (equivalent of having "vw" instead of "px")
-              return (this.radius(d.value) / 100) * this.width + 2;
+              return (this.radius(d.value) / 100) * this.width + 5;
             })
           );
 

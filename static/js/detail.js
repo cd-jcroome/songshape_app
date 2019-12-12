@@ -12,9 +12,11 @@ import { Preprocessor } from "./detail/preprocessor.js";
   // localhost:8000
 
   //let csvFileName = "SevenNationArmy.csv"
+  // get the spotify id from the url
   let spotify_id = window.location.pathname.split("/")[2];
-
-  //let mediaName = "SevenNationArmy.mp3"
+  // load the data for the given song
+  const temp = d3.csv(`/load_songdata/${spotify_id}`);
+  // if possible, locate song
   let mediaName = `../static/data/${spotify_id}.mp3`;
 
   //------------------------------------------------------------

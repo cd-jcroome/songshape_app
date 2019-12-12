@@ -104,14 +104,21 @@ def callback():
 # detail route
 @app.route('/detail/<spotify_id>')
 def detail(spotify_id):
-    access_token = session['oauth_token']
+    client_cred_payload = {
+        'grant_type':'client_credentials',
+        'client_id': spotify_key,
+        'client_secret': spotify_secret_key,
+    }
+    token_request = requests.post(spotify_token_url,data=client_cred_payload)
+    response_data = json.loads(token_request.text)
+    access_token = response_data["access_token"]
     authorization_header = {"Authorization": "Bearer {}".format(access_token)}
+    
     spotify_id = spotify_id
-
-
     track_info = requests.get(spotify_tracks_url+spotify_id, headers=authorization_header).json()
 
-    # preview_url = str(track_info['preview_url']).split("?")[0]+".mp3"
+    preview_url = str(track_info['preview_url']).split("?")[0]+".mp3"
+    print(preview_url)
 
     return render_template('detail.html', title=spotify_id, track_info=track_info)
 

@@ -1,4 +1,6 @@
 {% extends "layout.html" %} {% block content %}
+<script type="module" src="../static/js/detail.js"></script>
+<link rel="stylesheet" type="text/css" href="../static/css/detail.css" />
 <header class="masthead mb-auto">
   <div class="inner">
     <h1 class="masthead-brand">AudioForma</h1>
@@ -14,9 +16,6 @@
     <audio id="my-media">
       <source type="audio/mp3" />
     </audio>
-    <!-- <video id="my-media"> -->
-    <!-- <source type = "video/mp4"> -->
-    <!-- </video> -->
     <button type="button" id="start" class="bubu-button">start</button>
     <table id="music-info">
       <tr>
@@ -50,6 +49,4 @@
     <div id="legend-div"></div>
   </div>
 </div>
-<script type="module" src="../static/js/detail.js"></script>
-<link rel="stylesheet" type="text/css" href="../static/css/detail.css" />
 {% endblock %}
