@@ -299,10 +299,14 @@
                     let genreName = d["artist"][0]["genres"][0];
                     return this.color(this.genreScale(genreName));
                   }
+                })
+                .attr("stroke", d => {
+                  if (this.browseType == "song") {
+                    return d["track"]["preview_url"] !== null
+                      ? "white"
+                      : "none";
+                  } else "none";
                 }),
-            // .attr("stroke-fill", d => {
-            //   return d["track"]["preview_url"] !== null ? "white" : "none";
-            // }),
             update =>
               update.attr("r", d => {
                 return this.radius(d.value) + "vw";

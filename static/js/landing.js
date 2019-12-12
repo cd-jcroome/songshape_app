@@ -355,7 +355,7 @@
         graphic: ".scroll__graphic",
         text: ".scroll__text",
         step: ".step",
-        debug: true
+        debug: false
       })
       // 3. bind scrollama event handlers (this can be chained like below)
       .onStepEnter(handleStepEnter);
