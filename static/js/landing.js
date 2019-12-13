@@ -87,45 +87,23 @@
     mthdText
       .append("p")
       .text(
-        "We start off by connecting with Spotify to query a user's library. After making a few API calls, we render the initial song metadata results using d3js. These results answer the question posed above at a high level, but surely there's more insight to be found. In addition to the metadata, Spotify provides access to 30s samples of many of their songs. We process these samples using the python 'Librosa' library, and present the final output to you, the viewer."
+        "We start off by connecting with Spotify to query a user's library. After making a few API calls, we render the initial song metadata results using d3js."
       );
     mthdText
       .append("p")
       .text(
-        "Keep scrolling for a legend explaining how to read the visualizations."
+        "In addition to the metadata, Spotify provides access to 30s samples of many of their songs."
+      );
+    mthdText
+      .append("p")
+      .text(
+        "We process these samples using the python 'Librosa' library, and present the final output to you, the viewer."
       );
     mthdText
       .selectAll("p")
       .attr("class", "mthdText")
       .style("opacity", "0")
       .style("transform", `translate(0px,${stepHeight / 8}px)`);
-
-    // Legend-----------------------------------------------------
-    chartSpace
-      .append("a")
-      .attr("name", "legend")
-      .append("div")
-      .attr("id", "legendGroup")
-      .attr("class", "step")
-      .attr("data-step", "c")
-      .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`);
-
-    let legendText = d3.selectAll("#legendGroup").append("g");
-
-    legendText
-      .append("h2")
-      .text("Legend")
-      .style("transform", `translate(0px,${stepHeight / 8}px)`)
-      .style("opacity", "0")
-      .attr("class", "legendText");
-
-    legendText
-      .append("p")
-      .text("Here's where we'll explain how to understand the viz.")
-      .style("transform", `translate(0px,${stepHeight / 8}px)`)
-      .style("opacity", "0")
-      .attr("class", "legendText");
 
     // Bubbles---------------------------------------------------
     chartSpace
@@ -148,7 +126,21 @@
       .append("select")
       .attr("class", "form-control")
       .attr("id", "browse-type")
-      .style("transform", "translate(0,50px)");
+      .style("transform", "translate(10px,0)");
+
+    d3.select("#bubblesGroup")
+      .append("form")
+      .attr("class", "form-inline")
+      .append("div")
+      .attr("class", "form-group")
+      .append("label")
+      .attr("for", "sortType")
+      .text("Sort By")
+      .append("select")
+      .attr("class", "form-control")
+      .attr("id", "sort-type")
+      .style("transform", "translate(10px,0)");
+
     // add options to browse-by
     var browseSelector = d3.select("#browse-type");
     browseSelector
@@ -165,24 +157,12 @@
       .text("Genre");
 
     // add sort-by selector
-    chartSpace
-      .append("form")
-      .attr("class", "form-inline")
-      .append("div")
-      .attr("class", "form-group")
-      .append("label")
-      .attr("for", "sortType")
-      .text("Sort By")
-      .append("select")
-      .attr("class", "form-control")
-      .attr("id", "sort-type")
-      .style("transform", "translate(0,50px)");
     // add options to sort-by
     var sortSelector = d3.select("#sort-type");
     sortSelector
       .append("option")
       .attr("value", "default")
-      .text("Default");
+      .text("Popularity");
     sortSelector
       .append("option")
       .attr("value", "acousticness")
@@ -195,6 +175,10 @@
       .append("option")
       .attr("value", "liveness")
       .text("Liveness");
+    sortSelector
+      .append("option")
+      .attr("value", "valence")
+      .text("Valence");
     sortSelector
       .append("option")
       .attr("value", "energy")
@@ -243,10 +227,6 @@
       .transition()
       .style("opacity", "0");
     chartSpace
-      .selectAll(".legendText")
-      .transition()
-      .style("opacity", "0");
-    chartSpace
       .selectAll(".aboutText")
       .transition()
       .style("opacity", "0");
@@ -262,29 +242,6 @@
       .transition()
       .style("opacity", "1");
     chartSpace
-      .selectAll(".legendText")
-      .transition()
-      .style("opacity", "0");
-    chartSpace
-      .selectAll(".aboutText")
-      .transition()
-      .style("opacity", "0");
-  }
-
-  function legend() {
-    chartSpace
-      .selectAll(".welcomeText")
-      .transition()
-      .style("opacity", "0");
-    chartSpace
-      .selectAll(".mthdText")
-      .transition()
-      .style("opacity", "0");
-    chartSpace
-      .selectAll(".legendText")
-      .transition()
-      .style("opacity", "1");
-    chartSpace
       .selectAll(".aboutText")
       .transition()
       .style("opacity", "0");
@@ -297,10 +254,6 @@
       .style("opacity", "0");
     chartSpace
       .selectAll(".mthdText")
-      .transition()
-      .style("opacity", "0");
-    chartSpace
-      .selectAll(".legendText")
       .transition()
       .style("opacity", "0");
     chartSpace
@@ -320,14 +273,10 @@
         activelink("mthdlnk");
         methodology();
         break;
-      case 2: // legend
-        activelink("lgndlnk");
-        legend();
-        break;
-      case 3: // bubbles viz
+      case 2: // bubbles viz
         activelink("xplrlnk");
         break;
-      case 4:
+      case 3:
         activelink("abtlnk");
         about();
         break;

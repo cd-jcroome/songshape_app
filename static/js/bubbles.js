@@ -64,7 +64,9 @@
 
       // create tooltip functions
       this.showTooltip = d => {
-        this.tooltip.style("opacity", 1).html(d.key);
+        this.tooltip
+          .style("opacity", 1)
+          .html(this.browseType == "song" ? d.key.split("_")[1] : d.key);
       };
 
       this.moveTooltip = d => {
@@ -163,94 +165,159 @@
         // NOTE: Only when "sort by" is set to "default" is
         // "browse by" selection honored. In all other cases where
         // "sort by" is non-default, "browse by" selection is ignored!
-        this.sortType = this.selectSortType.property("value");
 
-        // honor "browse by" selection
-        if (this.sortType == "default") {
-          // user toggle among rollup views
-          if (this.browseType == "song") {
-            if (this.song_filter === false) {
-              this.display_data = this.deepCopyRawData();
-            }
-
-            // console.log(this.display_data);
-
-            // scale radius (constant for song view)
-            this.radius.domain([1, 1]).range([2, 2]);
-          } else if (this.browseType == "artist") {
-            this.display_data = this.rawData;
-
-            // group data by artist
-            let artist = d3
-              .nest()
-              .key(d => {
-                return d["artist"][0]["name"];
-              })
-              .sortKeys(d3.ascending)
-              .rollup(v => {
-                return v.length;
-              })
-              .entries(this.display_data);
-
-            // console.log(artist);
-            // console.log(artist.length);
-
-            this.display_data = artist;
-
-            // scale radius by artist group size
-            this.radius
-              .domain(
-                d3.extent(artist, d => {
-                  return d.value;
-                })
-              )
-              .nice()
-              .range([2, 10]);
-          } else {
-            // this.browseType == "genre"
-
-            this.display_data = this.rawData;
-
-            // group data by genre
-            let genre = d3
-              .nest()
-              .key(d => {
-                return d["artist"][0]["genres"][0];
-              })
-              .sortKeys(d3.ascending)
-              .rollup(v => {
-                return v.length;
-              })
-              .entries(this.display_data);
-
-            // console.log(genre);
-            // console.log(genre.length);
-
-            this.display_data = genre;
-
-            // scale radius by genre group size
-            this.radius
-              .domain(
-                d3.extent(genre, d => {
-                  return d.value;
-                })
-              )
-              .nice()
-              .range([2, 10]);
+        // user toggle among rollup views
+        if (this.browseType == "song") {
+          if (this.song_filter === false) {
+            this.display_data = this.deepCopyRawData();
           }
-        }
-        // ignore "browse by" selection
-        else {
-          this.display_data = this.deepCopyRawData();
+          this.display_data = this.rawData;
 
-          // scale radius by d[this.sortType] magnitude
+          // group data by song
+          let song = d3
+            .nest()
+            .key(d => {
+              return (
+                d["track"]["id"] +
+                "_" +
+                d["track"]["name"] +
+                "_" +
+                d["artist"][0]["name"] +
+                "_" +
+                d["artist"][0]["genres"][0] +
+                "_" +
+                d["track"]["preview_url"]
+              );
+            })
+            .sortKeys(d3.ascending)
+            .rollup(function(leaves) {
+              return {
+                score: d3.mean(leaves, function(d) {
+                  let sortType = d3.select("#sort-type").property("value");
+
+                  if (sortType == "acousticness") {
+                    return d["af_data"][0]["acousticness"];
+                  } else if (sortType == "danceability") {
+                    return d["af_data"][0]["danceability"];
+                  } else if (sortType == "liveness") {
+                    return d["af_data"][0]["liveness"];
+                  } else if (sortType == "valence") {
+                    return d["af_data"][0]["valence"];
+                  } else if (sortType == "energy") {
+                    return d["af_data"][0]["energy"];
+                  } else {
+                    return d["track"]["popularity"] / 100;
+                  }
+                })
+              };
+            })
+            .entries(this.display_data);
+
+          console.log(song);
+          // console.log(artist.length);
+
+          this.display_data = song;
+
+          // scale radius (constant for song view)
+          this.radius.domain([1, 1]).range([0.5, 0.5]);
+        } else if (this.browseType == "artist") {
+          this.display_data = this.rawData;
+
+          // group data by artist
+          let artist = d3
+            .nest()
+            .key(d => {
+              return d["artist"][0]["name"] + "_" + d["artist"][0]["genres"][0];
+            })
+            .sortKeys(d3.ascending)
+            .rollup(function(leaves) {
+              return {
+                score: d3.mean(leaves, function(d) {
+                  let sortType = d3.select("#sort-type").property("value");
+
+                  if (sortType == "acousticness") {
+                    return d["af_data"][0]["acousticness"];
+                  } else if (sortType == "danceability") {
+                    return d["af_data"][0]["danceability"];
+                  } else if (sortType == "liveness") {
+                    return d["af_data"][0]["liveness"];
+                  } else if (sortType == "valence") {
+                    return d["af_data"][0]["valence"];
+                  } else if (sortType == "energy") {
+                    return d["af_data"][0]["energy"];
+                  } else {
+                    return d["track"]["popularity"] / 100;
+                  }
+                }),
+                size: leaves.length
+              };
+            })
+            .entries(this.display_data);
+
+          console.log(artist);
+          // console.log(artist.length);
+
+          this.display_data = artist;
+
+          // scale radius by artist group size
           this.radius
             .domain(
-              d3.extent(this.display_data, d => {
-                return d[this.sortType];
+              d3.extent(artist, d => {
+                return d["value"]["size"];
               })
             )
-            .range([2, 10]);
+            .nice()
+            .range([0.5, 10]);
+        } else {
+          // this.browseType == "genre"
+
+          this.display_data = this.rawData;
+
+          // group data by genre
+          let genre = d3
+            .nest()
+            .key(d => {
+              return d["artist"][0]["genres"][0];
+            })
+            .sortKeys(d3.ascending)
+            .rollup(function(leaves) {
+              return {
+                score: d3.mean(leaves, function(d) {
+                  let sortType = d3.select("#sort-type").property("value");
+
+                  if (sortType == "acousticness") {
+                    return d["af_data"][0]["acousticness"];
+                  } else if (sortType == "danceability") {
+                    return d["af_data"][0]["danceability"];
+                  } else if (sortType == "liveness") {
+                    return d["af_data"][0]["liveness"];
+                  } else if (sortType == "valence") {
+                    return d["af_data"][0]["valence"];
+                  } else if (sortType == "energy") {
+                    return d["af_data"][0]["energy"];
+                  } else {
+                    return d["track"]["popularity"] / 100;
+                  }
+                }),
+                size: leaves.length
+              };
+            })
+            .entries(this.display_data);
+
+          console.log(genre);
+          // console.log(genre.length);
+
+          this.display_data = genre;
+
+          // scale radius by genre group size
+          this.radius
+            .domain(
+              d3.extent(genre, d => {
+                return d["value"]["size"];
+              })
+            )
+            .nice()
+            .range([0.5, 10]);
         }
 
         // remove all existing tooltips
@@ -281,35 +348,33 @@
                 .append("circle")
                 .attr("class", "bubble")
                 .attr("r", d => {
-                  return this.radius(d.value) + "vw";
+                  return this.browseType == "song"
+                    ? this.radius(1) + "vw"
+                    : this.radius(d["value"]["size"]) + "vw";
                 })
                 .attr("fill", (d, i) => {
-                  if (this.sortType == "default") {
-                    if (this.browseType == "song") {
-                      let genreName = d["artist"][0]["genres"][0];
-                      return this.color(this.genreScale(genreName));
-                    } else if (this.browseType == "artist") {
-                      return "#A9A9A9";
-                    } // this.browseType == "genre"
-                    else {
-                      let genreName = d["key"];
-                      return this.color(this.genreScale(genreName));
-                    }
-                  } else {
-                    let genreName = d["artist"][0]["genres"][0];
+                  if (this.browseType == "song") {
+                    let genreName = d.key.split("_")[3];
+                    return this.color(this.genreScale(genreName));
+                  } else if (this.browseType == "artist") {
+                    let genreName = d.key.split("_")[1];
+                    return this.color(this.genreScale(genreName));
+                  } // this.browseType == "genre"
+                  else {
+                    let genreName = d["key"];
                     return this.color(this.genreScale(genreName));
                   }
                 })
                 .attr("stroke", d => {
                   if (this.browseType == "song") {
-                    return d["track"]["preview_url"] !== null
-                      ? "white"
-                      : "none";
+                    return d.key.split("_")[4] !== "null" ? "white" : "none";
                   } else "none";
                 }),
             update =>
               update.attr("r", d => {
-                return this.radius(d.value) + "vw";
+                return this.browseType == "song"
+                  ? this.radius(1) + "vw"
+                  : this.radius(d["value"]["size"]) + "vw";
               }),
             exit => exit.remove()
           );
@@ -340,6 +405,7 @@
           }
           if (this.browseType == "genre") {
             this.display_data = this.rawData.filter(v => {
+              console.log(d["key"]);
               return d.key == v["artist"][0]["genres"][0];
             });
 
@@ -356,22 +422,36 @@
 
             this.updateViz();
           } else {
-            window.location = `/detail/${d["track"]["id"]}`;
+            window.location = `/detail/${d["key"].split("_")[0]}`;
           }
         });
-
+        const xScale = d3
+          .scaleLinear()
+          .domain([0, 1])
+          .range([150, this.width]);
         // initialize force simulation
         this.simulation = d3
           .forceSimulation()
-          .force("x", d3.forceX(this.width / 2).strength(0.05))
-          .force("y", d3.forceY(this.height / 2).strength(0.05))
+          .force(
+            "x",
+            d3
+              .forceX(function(d) {
+                return xScale(d["value"]["score"]);
+              })
+              .strength(0.05)
+          )
+          .force("y", d3.forceY(this.height * 0.3).strength(0.05))
           .force(
             "collide",
             d3.forceCollide(d => {
               // responsive width (equivalent of having "vw" instead of "px")
-              return (this.radius(d.value) / 100) * this.width + 5;
+              return this.browseType == "song"
+                ? (this.radius(0.5) / 100) * this.width + 5
+                : (this.radius(d["value"]["size"]) / 100) * this.width + 5;
             })
           );
+
+        const yBaseline = this.height * 0.8;
 
         // call force simulation
         this.simulation.nodes(this.display_data).on("tick", d => {
