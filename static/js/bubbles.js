@@ -176,7 +176,7 @@
             // console.log(this.display_data);
 
             // scale radius (constant for song view)
-            this.radius.domain([1, 1]).range([0.5, 0.5]);
+            this.radius.domain([1, 1]).range([2, 2]);
           } else if (this.browseType == "artist") {
             this.display_data = this.rawData;
 
@@ -205,7 +205,7 @@
                 })
               )
               .nice()
-              .range([0.5, 10]);
+              .range([2, 10]);
           } else {
             // this.browseType == "genre"
 
@@ -236,7 +236,7 @@
                 })
               )
               .nice()
-              .range([0.5, 10]);
+              .range([2, 10]);
           }
         }
         // ignore "browse by" selection
@@ -250,7 +250,7 @@
                 return d[this.sortType];
               })
             )
-            .range([0.5, 10]);
+            .range([2, 10]);
         }
 
         // remove all existing tooltips
@@ -345,7 +345,9 @@
 
             for (let i = 0; i < this.display_data.length; ++i) {
               this.display_data[i]["value"] = 1.0;
-              this.display_data[i]["key"] = this.display_data[i]["song"];
+              this.display_data[i]["key"] = this.display_data[i]["track"][
+                "name"
+              ];
             }
 
             // console.log(this.display_data);

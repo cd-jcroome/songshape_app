@@ -1,4 +1,8 @@
-{% extends "layout.html" %} {% block content %}
+{% extends "layout.html" %} {% block content %} var preview_url =
+<script type="text/javascript">
+  var preview_url = {{ preview_url|tojson }}
+  console.log(preview_url)
+</script>
 <script type="module" src="../static/js/detail.js"></script>
 <link rel="stylesheet" type="text/css" href="../static/css/detail.css" />
 <header class="masthead mb-auto">

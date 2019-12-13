@@ -9,15 +9,10 @@ import { Preprocessor } from "./detail/preprocessor.js";
 {
   // start scope
 
-  // localhost:8000
-
-  //let csvFileName = "SevenNationArmy.csv"
   // get the spotify id from the url
   let spotify_id = window.location.pathname.split("/")[2];
-  // load the data for the given song
-  const temp = d3.csv(`/load_songdata/${spotify_id}`);
   // if possible, locate song
-  let mediaName = `../static/data/${spotify_id}.mp3`;
+  let mediaName = "";
 
   //------------------------------------------------------------
   //------------------------------------------------------------
@@ -25,34 +20,30 @@ import { Preprocessor } from "./detail/preprocessor.js";
     let myBtn = document.querySelector("#start");
     myBtn.disabled = true;
 
-    const mediaC = new MediaController(mediaName);
-    mediaC.mediaEle.addEventListener("canplaythrough", event => {
-      myBtn.disabled = false;
-    });
-
     const prep = new Preprocessor();
     const musicPlot = new MusicPlot();
     const ac = new AnimationController();
     musicPlot.preprocessor = prep;
 
-    myBtn.addEventListener("click", event => {
-      myBtn.textContent = "loading ...";
+    myBtn.textContent = "loading ...";
 
-      // asynchronous function, returns immediately
-      let temp = d3.csv(`/load_songdata/${spotify_id}`);
-
-      // once the large csv file is loaded into memory
-      temp.then(csvRawData => {
-        myBtn.textContent = "loaded";
-
-        prep.preprocess(csvRawData, ac.plotRefreshRate);
-
+    // asynchronous function, returns immediately
+    let temp = d3.csv(`/load_songdata/${spotify_id}`);
+    // once the large csv file is loaded into memory
+    temp.then(csvRawData => {
+      let mediaName = `../static/data/${spotify_id}.mp3`;
+      const mediaC = new MediaController(mediaName);
+      mediaC.mediaEle.addEventListener("canplaythrough", event => {
+        myBtn.disabled = false;
+      });
+      prep.preprocess(csvRawData, ac.plotRefreshRate);
+      myBtn.textContent = "loaded";
+      myBtn.addEventListener("click", event => {
+        mediaC.mediaEle.play();
         musicPlot.initializePlot(csvRawData);
         ac.musicLengthText.textContent = musicPlot.totalMusicTimeInSec.toFixed(
           1
         );
-
-        mediaC.mediaEle.play();
 
         function startAnalysis(timeStamp) {
           ac.update(timeStamp);

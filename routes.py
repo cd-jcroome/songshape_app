@@ -118,9 +118,8 @@ def detail(spotify_id):
     track_info = requests.get(spotify_tracks_url+spotify_id, headers=authorization_header).json()
 
     preview_url = str(track_info['preview_url']).split("?")[0]+".mp3"
-    print(preview_url)
 
-    return render_template('detail.html', title=spotify_id, track_info=track_info)
+    return render_template('detail.html', title=spotify_id, track_info=track_info, preview_url=preview_url)
 
 # load_metadata route (for universe vis)
 @app.route('/load_metadata', methods=['GET', 'POST'])
