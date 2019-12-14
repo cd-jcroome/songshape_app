@@ -385,7 +385,8 @@
 
         // click functionality
         this.circles.on("click", d => {
-          if (this.browseType == "artist") {
+          let browseType = this.browseType;
+          if (browseType == "artist") {
             this.display_data = this.rawData.filter(v => {
               return d.key.split("_")[0] == v["artist"][0]["name"];
             });
@@ -402,7 +403,7 @@
 
             this.clickThrough = true;
           }
-          if (this.browseType == "genre") {
+          if (browseType == "genre") {
             this.display_data = this.rawData.filter(v => {
               return d.key == v["artist"][0]["genres"][0];
             });
@@ -420,7 +421,7 @@
             this.updateViz();
 
             this.clickThrough = true;
-          } else if (this.clickThrough === true) {
+          } else if (browseType == "song") {
             window.location = `/detail/${d["key"].split("_")[0]}`;
           }
         });
