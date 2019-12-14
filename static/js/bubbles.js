@@ -54,6 +54,9 @@
       // this is for onclick "artist/genre to song" drill-down
       this.song_filter = false;
 
+      // this is to allow or block a clickthrough to detail
+      this.clickThrough = true;
+
       this.circles = null;
 
       this.simulation = null;
@@ -171,7 +174,7 @@
           if (this.song_filter === false) {
             this.display_data = this.deepCopyRawData();
           }
-          this.display_data = this.rawData;
+          // this.display_data = this.rawData;
 
           // group data by song
           let song = d3
@@ -213,7 +216,6 @@
             })
             .entries(this.display_data);
 
-          console.log(song);
           // console.log(artist.length);
 
           this.display_data = song;
@@ -254,7 +256,6 @@
             })
             .entries(this.display_data);
 
-          console.log(artist);
           // console.log(artist.length);
 
           this.display_data = artist;
@@ -270,8 +271,6 @@
             .range([0.5, 10]);
         } else {
           // this.browseType == "genre"
-
-          this.display_data = this.rawData;
 
           // group data by genre
           let genre = d3
@@ -304,7 +303,6 @@
             })
             .entries(this.display_data);
 
-          console.log(genre);
           // console.log(genre.length);
 
           this.display_data = genre;
@@ -389,7 +387,7 @@
         this.circles.on("click", d => {
           if (this.browseType == "artist") {
             this.display_data = this.rawData.filter(v => {
-              return d.key == v["artist"][0]["name"];
+              return d.key.split("_")[0] == v["artist"][0]["name"];
             });
 
             for (let i = 0; i < this.display_data.length; ++i) {
@@ -397,15 +395,15 @@
               this.display_data[i]["key"] = this.display_data[i]["song"];
             }
 
-            // console.log(this.display_data);
-
             this.song_filter = true;
+            this.clickThrough = false;
 
             this.updateViz();
+
+            this.clickThrough = true;
           }
           if (this.browseType == "genre") {
             this.display_data = this.rawData.filter(v => {
-              console.log(d["key"]);
               return d.key == v["artist"][0]["genres"][0];
             });
 
@@ -416,12 +414,13 @@
               ];
             }
 
-            // console.log(this.display_data);
-
             this.song_filter = true;
+            this.clickThrough = false;
 
             this.updateViz();
-          } else {
+
+            this.clickThrough = true;
+          } else if (this.clickThrough === true) {
             window.location = `/detail/${d["key"].split("_")[0]}`;
           }
         });
