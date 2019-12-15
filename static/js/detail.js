@@ -41,9 +41,6 @@ import { Preprocessor } from "./detail/preprocessor.js";
       myBtn.addEventListener("click", event => {
         mediaC.mediaEle.play();
         musicPlot.initializePlot(csvRawData);
-        ac.musicLengthText.textContent = musicPlot.totalMusicTimeInSec.toFixed(
-          1
-        );
 
         function startAnalysis(timeStamp) {
           ac.update(timeStamp);

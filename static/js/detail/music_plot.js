@@ -10,9 +10,9 @@ export function MusicPlot()
 
     this.margin = {top: 10, right: 10, bottom: 10, left: 10};
     this.numNotes = 12;
-    this.totalWidth = 600;
-    this.totalHeight = 80;
-
+    this.totalWidth = 470;
+    this.totalHeight = 70;
+	
     this.fullPlotWidth  = this.numNotes * this.totalHeight;
     this.fullPlotHeight = this.totalWidth + 100;
     this.width  = this.totalWidth  - this.margin.left - this.margin.right;
@@ -326,6 +326,8 @@ export function MusicPlot()
               })
               .attr("text-anchor", "middle") // text horizontal alignment
               .attr("alignment-baseline", "middle") // text vertical alignment
+			  .attr("fill", "#eeeeee")
+              .style("font-size","20px")
               .attr("transform", `translate(${this.width + 40}, ${this.margin.top + this.height}) rotate(-90)`);
 
 

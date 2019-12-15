@@ -216,6 +216,7 @@ def load_songdata(spotify_id):
 
         with open(f'./static/data/{spotify_id}.mp3', 'wb') as output:
             output.write(sample_30s.read())
+            print(f'song written to{output}')
 
         mp3_filepath = os.path.join(os.path.dirname(__file__),
                                     f'static/data/{spotify_id}.mp3')

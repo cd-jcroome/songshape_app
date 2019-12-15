@@ -1,56 +1,57 @@
-{% extends "layout.html" %} {% block content %} var preview_url =
-<script type="text/javascript">
-  var preview_url = {{ preview_url|tojson }}
-  console.log(preview_url)
-</script>
-<script type="module" src="../static/js/detail.js"></script>
-<link rel="stylesheet" type="text/css" href="../static/css/detail.css" />
-<header class="masthead mb-auto">
-  <div class="inner">
-    <h1 class="masthead-brand">AudioForma</h1>
-    <nav class="nav nav-masthead justify-content-center">
-      <form action="/" method="GET">
-        <button type="submit">Home</button>
-      </form>
-    </nav>
-  </div>
-</header>
-<div class="flex-container">
-  <div>
-    <audio id="my-media">
-      <source type="audio/mp3" />
-    </audio>
-    <button type="button" id="start" class="bubu-button">start</button>
-    <table id="music-info">
-      <tr>
-        <td>
-          <label>frame rate per second (FPS)</label>
-        </td>
-        <td>
-          <p id="fps"></p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label>time elapsed [second]</label>
-        </td>
-        <td>
-          <p id="time-elapsed"></p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <label>music length [second]</label>
-        </td>
-        <td>
-          <p id="music-length"></p>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div>
-    <div id="plot-div"></div>
-    <div id="legend-div"></div>
-  </div>
-</div>
-{% endblock %}
+{% extends "layout.html" %} {% block content %}
+
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/detail.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Pacifico|Roboto&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h1 class="masthead-brand">AudioForma</h1>
+      <nav class="nav nav-masthead justify-content-center">
+        <a class="nav-link active" id="homelnk" href="#welcome">Back To Home</a>
+      </nav>
+    </div>
+  </header>
+  <body>
+    <div id="controller-div" class="flex-container-alt">
+      <audio id="my-media">
+        <source type="audio/mp3" />
+      </audio>
+
+      <label id="song-label">Song Name:</label>
+      <p id="song-content"></p>
+
+      <label id="artist-label">Artist:</label>
+      <p id="artist-content"></p>
+
+      <label id="time-elapsed-label">Time Elapsed [s]:</label>
+      <p id="time-elapsed"></p>
+
+      <div id="buttonDiv">
+        <button type="button" id="start" class="bubu-button">Start</button>
+      </div>
+    </div>
+    <div class="flex-container">
+      <div id="plot-div"></div>
+      <div id="legend-div">
+        <br />
+      </div>
+    </div>
+  </body>
+
+  <footer>
+    <script type="text/javascript">
+      var preview_url = {{ preview_url|tojson }}
+      console.log(preview_url)
+    </script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="module" src="../static/js/detail.js"></script>
+  </footer>
+
+  {% endblock %}
+</html>
