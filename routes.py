@@ -218,8 +218,11 @@ def load_songdata(spotify_id):
             output.write(sample_30s.read())
             print(f'song written to{output}')
 
-        mp3_filepath = os.path.join(os.path.dirname(__file__),
-                                    f'static/data/{spotify_id}.mp3')
+        
+        if (socket.gethostname() in ["iMac", "APJ2HV2R68BAFD", "LAPTOP-RP2K2BF3"]): 
+            mp3_filepath = os.path.join(os.path.dirname(__file__),f'static/data/{spotify_id}.mp3')
+        else :
+            mp3_filepath = f'/app/static/data/{spotify_id}.mp3'
         y, sr = librosa.load(mp3_filepath)
         duration = librosa.core.get_duration(y=y, sr=sr)
         # split out the harmonic and percussive audio
