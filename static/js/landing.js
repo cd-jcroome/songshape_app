@@ -198,14 +198,33 @@
 
     aboutText
       .append("h2")
-      .text("About")
+      .text("About Us")
       .style("transform", `translate(0px,${stepHeight / 8}px)`)
       .style("opacity", "0")
       .attr("class", "aboutText");
 
     aboutText
       .append("p")
-      .text("we are three individuals.")
+      .text("3 individuals. 1 shared passion for data+design."
+        );
+    aboutText
+      .append("p")
+      .text("Ning Chen is an information designer with a background in architecture and urban planning. Her unique visual style transforms data into art."
+        );
+    aboutText
+      .append("p")
+      .text("Jasper Croome is based in Portland, OR, where he works as a data visualization developer at Nike. Jasper's love of music and after-hours d3 dabbling set in motion the AudioForma project."
+        );    
+    aboutText
+      .append("p")
+      .text("Rebecca Lantner is a quantitative analyst at a startup in Cambridge, MA. A self-professed data nerd, she delights in the layer of creativity that turns a SQL query into an impactful, data-driven experience."
+        );   
+    aboutText
+      .append("p")
+      .text("Special thanks to Zona Kostic for creative and strategic direction and Tianyu Liu for support with technical implementation."
+        );   
+    aboutText
+      .selectAll("p")
       .style("transform", `translate(0px,${stepHeight / 8}px)`)
       .style("opacity", "0")
       .attr("class", "aboutText");
