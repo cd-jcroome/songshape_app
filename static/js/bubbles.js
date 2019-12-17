@@ -71,7 +71,7 @@
           .style("opacity", 1)
           .html(
             this.browseType == "song"
-              ? d.key.split("_")[1]
+              ? `${d.key.split("_")[1]}, by ${d.key.split("_")[2]}`
               : this.browseType == "artist"
               ? d.key.split("_")[0]
               : d.key
@@ -461,7 +461,7 @@
           ])
           .range([this.width * 0.1, this.width * 0.9]);
 
-        var xAxis = d3.axisTop(xScale);
+        var xAxis = d3.axisTop(xScale).ticks(0);
 
         // axis labels-----------------------------------------------
         d3.selectAll(".xAxis").remove();
