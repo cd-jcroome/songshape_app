@@ -12,7 +12,7 @@ export function MusicPlot()
     this.numNotes = 12;
     this.totalWidth = 470;
     this.totalHeight = 70;
-	
+
     this.fullPlotWidth  = this.numNotes * this.totalHeight;
     this.fullPlotHeight = this.totalWidth + 100;
     this.width  = this.totalWidth  - this.margin.left - this.margin.right;
@@ -326,7 +326,7 @@ export function MusicPlot()
               })
               .attr("text-anchor", "middle") // text horizontal alignment
               .attr("alignment-baseline", "middle") // text vertical alignment
-			  .attr("fill", "#eeeeee")
+              .attr("fill", "#eeeeee")
               .style("font-size","20px")
               .attr("transform", `translate(${this.width + 40}, ${this.margin.top + this.height}) rotate(-90)`);
 
@@ -343,11 +343,12 @@ export function MusicPlot()
 
         this.legend = d3.select("#legend-div")
                         .append("svg")
-                        .attr("width", 200)
+                        .attr("width", 50)
                         .attr("height", 800);
 
         this.legend.append("text")
             .text("Octave")
+            .attr("fill", "#eeeeee")
             .attr("transform", "translate(0, 20)");
 
         this.legend.selectAll("g")
@@ -372,6 +373,7 @@ export function MusicPlot()
                 return d.toString();
             })
             .attr("text-anchor", "right")
+            .attr("fill", "#eeeeee")
             .attr("transform", (d, i) => {
                 return "translate(40, 20)";
             });
@@ -451,7 +453,7 @@ export function MusicPlot()
                         return "visible";
                     }
                 })
-                .attr("opacity", "0.2");
+                .attr("opacity", "0.3");
 
         this.myText.attr("font-size", (d) => {
                         if(d["noteUpdated"])

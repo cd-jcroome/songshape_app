@@ -1,5 +1,4 @@
-{% extends "layout.html" %} {% block content %}
-
+<!DOCTYPE html>
 <html>
   <head>
     <link
@@ -9,8 +8,8 @@
     />
     <link rel="stylesheet" type="text/css" href="../static/css/detail.css" />
     <link
-      href="https://fonts.googleapis.com/css?family=Pacifico|Roboto&display=swap"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Pacifico|Roboto&display=swap"
     />
   </head>
   <header class="masthead mb-auto">
@@ -27,11 +26,13 @@
         <source type="audio/mp3" />
       </audio>
 
-      <label id="song-label">Song Name:</label>
-      <p id="song-content"></p>
+      <!-- <label id="song-label">Song Name:</label> -->
+      <h2 id="song-content">
+        {{track_info.artists.0.name}} - {{track_info.name}}
+      </h2>
 
-      <label id="artist-label">Artist:</label>
-      <p id="artist-content"></p>
+      <!-- <label id="artist-label">Artist:</label>
+      <p id="artist-content"></p> -->
 
       <label id="time-elapsed-label">Time Elapsed [s]:</label>
       <p id="time-elapsed"></p>
@@ -56,6 +57,4 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script type="module" src="../static/js/detail.js"></script>
   </footer>
-
-  {% endblock %}
 </html>

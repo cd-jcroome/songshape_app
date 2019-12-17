@@ -48,32 +48,32 @@ body {
   margin-top: 10vh;
 }
 
-#song-label {
-  width: 8%;
+#song-label{
+    width:8%;
 }
 
-#song-content {
-  width: 30%;
+#song-content{
+    width:30%;
 }
 
-#artist-label {
-  width: 4%;
+#artist-label{
+    width:4%;
 }
 
-#artist-content {
-  width: 20%;
+#artist-content{
+    width:20%;
 }
 
-#time-elapsed-label {
-  width: 11%;
+#time-elapsed-label{
+    width:11%;
 }
 
-#time-elapsed {
-  width: 5%;
+#time-elapsed{
+    width:5%;
 }
 
 .bubu-button {
-  background-color: #1db954;
+  background-color: #1DB954;
   border: none;
   color: #eee;
   font-family: "Roboto";
@@ -93,7 +93,7 @@ div * {
 
 #plot-div {
   width: 900px;
-  margin-left: 70px;
+  margin-left:70px;
 }
 
 #legend-div {
@@ -115,7 +115,7 @@ table {
 }
 
 #buttonDiv {
-  margin-left: 40px;
+    margin-left:40px;
 }
 
 .myXAxis line {
@@ -131,3 +131,4 @@ table {
 .myXAxis text {
   display: none;
 }
+
