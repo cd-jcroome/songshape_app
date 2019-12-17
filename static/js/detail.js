@@ -31,6 +31,7 @@ import { Preprocessor } from "./detail/preprocessor.js";
     let temp = d3.csv(`/load_songdata/${spotify_id}`);
     // once the large csv file is loaded into memory
     temp.then(csvRawData => {
+      console.log(csvRawData)
       let mediaName = `../static/data/${spotify_id}.mp3`;
       const mediaC = new MediaController(mediaName);
       mediaC.mediaEle.addEventListener("canplaythrough", event => {
