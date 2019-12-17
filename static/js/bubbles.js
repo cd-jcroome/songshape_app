@@ -69,7 +69,13 @@
       this.showTooltip = d => {
         this.tooltip
           .style("opacity", 1)
-          .html(this.browseType == "song" ? d.key.split("_")[1] : d.key);
+          .html(
+            this.browseType == "song"
+              ? d.key.split("_")[1]
+              : this.browseType == "artist"
+              ? d.key.split("_")[0]
+              : d.key
+          );
       };
 
       this.moveTooltip = d => {
@@ -198,16 +204,22 @@
                 score: d3.mean(leaves, function(d) {
                   let sortType = d3.select("#sort-type").property("value");
 
-                  if (sortType == "acousticness") {
+                  if (sortType == "Acousticness") {
                     return d["af_data"][0]["acousticness"];
-                  } else if (sortType == "danceability") {
+                  } else if (sortType == "Danceability") {
                     return d["af_data"][0]["danceability"];
-                  } else if (sortType == "liveness") {
+                  } else if (sortType == "Liveness") {
                     return d["af_data"][0]["liveness"];
-                  } else if (sortType == "valence") {
+                  } else if (sortType == "Happiness") {
                     return d["af_data"][0]["valence"];
-                  } else if (sortType == "energy") {
+                  } else if (sortType == "Energy") {
                     return d["af_data"][0]["energy"];
+                  } else if (sortType == "Tempo") {
+                    return d["af_data"][0]["tempo"];
+                  } else if (sortType == "Loudness") {
+                    return d["af_data"][0]["loudness"];
+                  } else if (sortType == "Speechiness") {
+                    return d["af_data"][0]["speechiness"];
                   } else {
                     return d["track"]["popularity"] / 100;
                   }
@@ -237,16 +249,22 @@
                 score: d3.mean(leaves, function(d) {
                   let sortType = d3.select("#sort-type").property("value");
 
-                  if (sortType == "acousticness") {
+                  if (sortType == "Acousticness") {
                     return d["af_data"][0]["acousticness"];
-                  } else if (sortType == "danceability") {
+                  } else if (sortType == "Danceability") {
                     return d["af_data"][0]["danceability"];
-                  } else if (sortType == "liveness") {
+                  } else if (sortType == "Liveness") {
                     return d["af_data"][0]["liveness"];
-                  } else if (sortType == "valence") {
+                  } else if (sortType == "Happiness") {
                     return d["af_data"][0]["valence"];
-                  } else if (sortType == "energy") {
+                  } else if (sortType == "Energy") {
                     return d["af_data"][0]["energy"];
+                  } else if (sortType == "Tempo") {
+                    return d["af_data"][0]["tempo"];
+                  } else if (sortType == "Loudness") {
+                    return d["af_data"][0]["loudness"];
+                  } else if (sortType == "Speechiness") {
+                    return d["af_data"][0]["speechiness"];
                   } else {
                     return d["track"]["popularity"] / 100;
                   }
@@ -284,16 +302,22 @@
                 score: d3.mean(leaves, function(d) {
                   let sortType = d3.select("#sort-type").property("value");
 
-                  if (sortType == "acousticness") {
+                  if (sortType == "Acousticness") {
                     return d["af_data"][0]["acousticness"];
-                  } else if (sortType == "danceability") {
+                  } else if (sortType == "Danceability") {
                     return d["af_data"][0]["danceability"];
-                  } else if (sortType == "liveness") {
+                  } else if (sortType == "Liveness") {
                     return d["af_data"][0]["liveness"];
-                  } else if (sortType == "valence") {
+                  } else if (sortType == "Happiness") {
                     return d["af_data"][0]["valence"];
-                  } else if (sortType == "energy") {
+                  } else if (sortType == "Energy") {
                     return d["af_data"][0]["energy"];
+                  } else if (sortType == "Tempo") {
+                    return d["af_data"][0]["tempo"];
+                  } else if (sortType == "Loudness") {
+                    return d["af_data"][0]["loudness"];
+                  } else if (sortType == "Speechiness") {
+                    return d["af_data"][0]["speechiness"];
                   } else {
                     return d["track"]["popularity"] / 100;
                   }
@@ -376,7 +400,6 @@
               }),
             exit => exit.remove()
           );
-
         // hover functionality
         this.circles
           .on("mouseenter", this.showTooltip)
@@ -425,10 +448,73 @@
             window.location = `/detail/${d["key"].split("_")[0]}`;
           }
         });
+
         const xScale = d3
           .scaleLinear()
-          .domain([0, 1])
-          .range([150, this.width]);
+          .domain([
+            d3.min(this.display_data, d => {
+              return d["value"]["score"];
+            }),
+            d3.max(this.display_data, d => {
+              return d["value"]["score"];
+            })
+          ])
+          .range([this.width * 0.1, this.width * 0.9]);
+
+        var xAxis = d3.axisTop(xScale);
+
+        // axis labels-----------------------------------------------
+        d3.selectAll(".xAxis").remove();
+        this.svg
+          .append("g")
+          .attr("class", "xAxis")
+          .attr("transform", "translate(0," + this.height / 1.5 + ")")
+          .call(xAxis);
+
+        this.svg
+          .append("text")
+          .text("Less")
+          .attr("class", "xAxis labels")
+          .attr("text-anchor", "middle")
+          .attr("font-size", "14px")
+          .attr("fill", "white")
+          .attr(
+            "x",
+            xScale(
+              d3.min(this.display_data, d => {
+                return d["value"]["score"];
+              })
+            )
+          )
+          .attr("y", this.height / 1.5 + 25);
+
+        this.svg
+          .append("text")
+          .text("More")
+          .attr("class", "xAxis labels")
+          .attr("text-anchor", "middle")
+          .attr("font-size", "14px")
+          .attr("fill", "white")
+          .attr(
+            "x",
+            xScale(
+              d3.max(this.display_data, d => {
+                return d["value"]["score"];
+              })
+            )
+          )
+          .attr("y", this.height / 1.5 + 25);
+
+        this.svg
+          .append("text")
+          .text(d3.select("#sort-type").property("value"))
+          .attr("text-anchor", "middle")
+          .attr("font-size", "30px")
+          .attr("fill", "white")
+          .attr("class", "xAxis labels")
+          .attr("x", this.width / 2)
+          .attr("y", this.height / 3 + 25);
+
         // initialize force simulation
         this.simulation = d3
           .forceSimulation()
@@ -440,7 +526,7 @@
               })
               .strength(0.05)
           )
-          .force("y", d3.forceY(this.height * 0.3).strength(0.05))
+          .force("y", d3.forceY(this.height * 0.5).strength(0.05))
           .force(
             "collide",
             d3.forceCollide(d => {

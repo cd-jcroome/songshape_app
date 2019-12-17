@@ -8,7 +8,7 @@ body {
   height: 100%;
   background-color: #222;
   color: #eee;
-  font-family: "Pacifico", cursive;
+  font-family: "Roboto";
 }
 
 .masthead {
@@ -57,7 +57,7 @@ body {
 }
 
 #artist-label{
-    width:5%;
+    width:4%;
 }
 
 #artist-content{
@@ -65,7 +65,7 @@ body {
 }
 
 #time-elapsed-label{
-    width:10%;
+    width:11%;
 }
 
 #time-elapsed{
@@ -76,8 +76,8 @@ body {
   background-color: #1DB954;
   border: none;
   color: #eee;
-  font-family: "Pacifico", cursive;
-  padding: 10px 24px;
+  font-family: "Roboto";
+  padding: 7px 30px;
   text-align: center;
   text-decoration: none;
   font-size: 1.5vw;
@@ -111,11 +111,11 @@ div * {
 
 table {
   border-collapse: collapse;
-  font-family: "Pacifico", cursive;
+  font-family: "Roboto";
 }
 
 #buttonDiv {
-    margin-left:50px;
+    margin-left:40px;
 }
 
 .myXAxis line {
