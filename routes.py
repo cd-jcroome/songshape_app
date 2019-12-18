@@ -61,6 +61,7 @@ db.init_app(app)
 
 # authenticate route
 @app.route('/')
+@app.route('index')
 def authenticate():
     if 'oauth_key' in session:
         return redirect(url_for('landing'))
