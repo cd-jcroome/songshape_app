@@ -3,11 +3,12 @@
   const scroller = scrollama();
   const chartSpace = d3.select("#scroll");
   const step = chartSpace.selectAll(".step");
-  const headerDuration = 500;
-  const textDuration = 1500;
+  const headerDuration = 200;
+  const textDuration = 1000;
 
   let allSongs = [];
   let response = [];
+  let header = d3.select(".header").select("h1");
   let windowHeight = [];
   let windowWidth = [];
   let stepHeight = [];
@@ -33,7 +34,10 @@
   }
 
   function buildSections() {
+    // welcome-----------------------------------------------------
     chartSpace
+      .append("a")
+      .attr("name", "welcome")
       .append("div")
       .attr("id", "welcomeGroup")
       .attr("class", "step")
@@ -41,7 +45,40 @@
       .style("height", `${stepHeight}px`)
       .style("width", `${stepWidth}px`);
 
+    let welcomeText = d3.selectAll("#welcomeGroup").append("g");
+
+    welcomeText
+      .append("h2")
+      .attr("class", "welcomeText")
+      .text("What is the Shape of a Song?")
+      // .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .style("opacity", "0");
+    welcomeText
+      .append("p")
+      .attr("class", "welcomeText")
+      .text(
+        "That's the riddle we set out to answer with this project. This site is our attempt to share what we found with you."
+      );
+
+    welcomeText
+      .append('div')
+      .attr("class", "welcomeText")
+      .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/-AG25gbI51c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
+      // .style("transform", `translate(0px,${stepHeight / 2}px)`)
+    
+    welcomeText.append("p")
+      .attr("class", "welcomeText")
+      .text("Scroll down to begin.");
+
+    welcomeText
+      .selectAll(".welcomeText")
+      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .style("opacity", "0");
+
+    // Methodology-----------------------------------------------------
     chartSpace
+      .append("a")
+      .attr("name", "methodology")
       .append("div")
       .attr("id", "mthdGroup")
       .attr("class", "step")
@@ -49,136 +86,225 @@
       .style("height", `${stepHeight}px`)
       .style("width", `${stepWidth}px`);
 
-    chartSpace
-      .append("div")
-      .attr("id", "legendGroup")
-      .attr("class", "step")
-      .attr("data-step", "c")
-      .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`);
+    let mthdText = d3.selectAll("#mthdGroup").append("g");
 
+    mthdText
+      .append("h2")
+      .text("Methodology")
+      .style("transform", `translate(0px,${stepHeight / 8}px)`)
+      .attr("class", "mthdText");
+    mthdText
+      .append("p")
+      .text(
+        "We start off by connecting with Spotify to query a user's library. After making a few API calls, we render the initial song metadata results using d3js."
+      );
+    mthdText
+      .append("p")
+      .text(
+        "Our first visual channel is bubbles. Each song is represented by a bubble colored by its genre. Viewers can browse the songs by genre or artist, where larger bubble diameter indicates larger collection of songs. Viewers can also sort songs by Spotify metadata (i.e. song features), such as danceability and acousticness, in ascending order where songs with greater feature values are placed on the right to those with smaller values."
+      );
+    mthdText
+      .append("p")
+      .text(
+        "In addition, Spotify provides 30s samples for many songs, represented by bubbles with white outlines. Click the bubbles to access the detail."
+      );
+    mthdText
+      .append("p")
+      .text(
+        "We process these samples using the python 'Librosa' library, and invented our second visual channel: the Gaussian-shaped curves. As the music plays, the detected notes are plotted as curves, whose height, growing horizontally, shows the note intensity. A certain note (e.g. D) spans up to 9 octaves, having 9 curves placed on top of each other. Each curve is uniquely colored by its octave."
+      );
+
+    mthdText
+      .selectAll("p")
+      .attr("class", "mthdText")
+      .style("opacity", "0")
+      .style("transform", `translate(0px,${stepHeight / 8}px)`);
+
+    // Bubbles---------------------------------------------------
     chartSpace
+      .append("a")
+      .attr("name", "bubbles")
       .append("div")
-      .attr("id", "universeGroup")
+      .attr("id", "bubblesGroup")
       .attr("class", "step")
       .attr("data-step", "d")
-      .style("height", `${stepHeight}px`)
-      .style("width", `${stepWidth}px`);
+      .attr("height", `${stepHeight}`)
+      .attr("width", `${stepWidth}`)
+      // add browse-by selctor
+      .append("div")
+      .attr("class", "form-group")
+      .style("width", "30vw")
+      .style("margin", "0")
+      .append("label")
+      .attr("for", "browseType")
+      .text("Browse By")
+      .append("select")
+      .attr("class", "form-control")
+      .attr("id", "browse-type")
+      .style("transform", "translate(10px,0)");
 
+    d3.select(".form-group")
+      .append("label")
+      .attr("for", "sortType")
+      .text("Sort By")
+      .style("transform", "translate(50px,0)")
+      .append("select")
+      .attr("class", "form-control")
+      .attr("id", "sort-type")
+      .style("transform", "translate(10px,0)");
+
+    // add options to browse-by
+    var browseSelector = d3.select("#browse-type");
+    browseSelector
+      .append("option")
+      .attr("value", "song")
+      .text("Song");
+    browseSelector
+      .append("option")
+      .attr("value", "artist")
+      .text("Artist");
+    browseSelector
+      .append("option")
+      .attr("value", "genre")
+      .text("Genre");
+
+    // add sort-by selector
+    // add options to sort-by
+    var sortSelector = d3.select("#sort-type");
+    sortSelector
+      .append("option")
+      .attr("value", "Popularity")
+      .text("Popularity");
+    sortSelector
+      .append("option")
+      .attr("value", "Danceability")
+      .text("Danceability");
+    sortSelector
+      .append("option")
+      .attr("value", "Tempo")
+      .text("Tempo");
+    sortSelector
+      .append("option")
+      .attr("value", "Acousticness")
+      .text("Acousticness");
+    sortSelector
+      .append("option")
+      .attr("value", "Liveness")
+      .text("Liveness");
+    sortSelector
+      .append("option")
+      .attr("value", "Happiness")
+      .text("Happiness");
+    sortSelector
+      .append("option")
+      .attr("value", "Energy")
+      .text("Energy");
+    sortSelector
+      .append("option")
+      .attr("value", "Loudness")
+      .text("Loudness");
+    sortSelector
+      .append("option")
+      .attr("value", "Speechiness")
+      .text("Speechiness");
+    // About---------------------------------------------------
     chartSpace
+      .append("a")
+      .attr("name", "about")
       .append("div")
       .attr("id", "aboutGroup")
       .attr("class", "step")
       .attr("data-step", "d")
       .style("height", `${stepHeight}px`)
       .style("width", `${stepWidth}px`);
+
+    let aboutText = d3.selectAll("#aboutGroup").append("g");
+
+    aboutText
+      .append("h2")
+      .text("About Us")
+      .style("transform", `translate(0px,${stepHeight / 8}px)`)
+      .style("opacity", "0")
+      .attr("class", "aboutText");
+
+    aboutText
+      .append("p")
+      .text("3 individuals. 1 shared passion for data+design.");
+    aboutText
+      .append("p")
+      .text(
+        "Ning Chen is an information designer with a background in architecture and urban planning. Her unique visual style transforms data into art."
+      );
+    aboutText
+      .append("p")
+      .text(
+        "Jasper Croome is based in Portland, OR, where he works as a data visualization developer at Nike. Jasper's love of music and after-hours d3 dabbling set in motion the AudioForma project."
+      );
+    aboutText
+      .append("p")
+      .text(
+        "Rebecca Lantner is a quantitative analyst at a startup in Cambridge, MA. A self-professed data nerd, she delights in the layer of creativity that turns a SQL query into an impactful, data-driven experience."
+      );
+    aboutText
+      .append("p")
+      .text(
+        "Special thanks to Zona Kostic for creative and strategic direction and Tianyu Liu for support with technical implementation."
+      );
+    aboutText
+      .selectAll("p")
+      .style("transform", `translate(0px,${stepHeight / 8}px)`)
+      .style("opacity", "0")
+      .attr("class", "aboutText");
+  }
+
+  function activelink(linkName) {
+    d3.selectAll(".active").classed("active", false);
+    var linkName = d3.selectAll(`#${linkName}`);
+    linkName.classed("active", !linkName.classed("active"));
   }
 
   function welcome() {
-    chartSpace.selectAll("#mthdText").remove();
-    chartSpace.selectAll("#welcomeText").remove();
-    let welcomeText = d3
-      .selectAll("#welcomeGroup")
-      .append("g")
-      .attr("id", "welcomeText")
-      .style("transform", `translate(0,${windowHeight / 2}px)`);
-
-    welcomeText
-      .append("h1")
-      .text("What does a song look like?")
-      .attr("text-align", "left")
-      .style("opacity", "0")
+    chartSpace
+      .selectAll(".welcomeText")
       .transition()
-      .duration(headerDuration)
       .style("opacity", "1");
-
-    welcomeText
-      .append("p")
-      .text(
-        "That's the riddle we set out to answer with this project. Through many different trials and iterations, this site is our attempt to share what we found with you. \n\nScroll down to begin."
-      )
-      .attr("text-align", "left")
-      .style("opacity", "0")
+    chartSpace
+      .selectAll(".mthdText")
       .transition()
-      .duration(textDuration)
-      .style("opacity", "1");
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".aboutText")
+      .transition()
+      .style("opacity", "0");
   }
 
   function methodology() {
-    chartSpace.selectAll("#welcomeText").remove();
-    chartSpace.selectAll("#legendText").remove();
-    chartSpace.selectAll("#mthdText").remove();
-    let mthdText = d3
-      .selectAll("#mthdGroup")
-      .append("g")
-      .attr("id", "mthdText")
-      .style("transform", `translate(0,${windowHeight / 2}px)`);
-
-    mthdText
-      .append("h1")
-      .text("Methodology")
-      .style("opacity", "0")
+    chartSpace
+      .selectAll(".welcomeText")
       .transition()
-      .duration(headerDuration)
-      .style("opacity", "1");
-
-    mthdText
-      .append("p")
-      .text("Here's where we'll discuss our methodology and whatnot.")
-      .style("opacity", "0")
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".mthdText")
       .transition()
-      .duration(textDuration)
       .style("opacity", "1");
-  }
-
-  function legend() {
-    chartSpace.selectAll("#mthdText").remove();
-    chartSpace.selectAll("#universeText").remove();
-    chartSpace.selectAll("#legendText").remove();
-    let legendText = d3
-      .selectAll("#legendGroup")
-      .append("g")
-      .attr("id", "legendText")
-      .style("transform", `translate(0,${windowHeight / 2}px)`);
-
-    legendText
-      .append("h1")
-      .text("Legend")
-      .style("opacity", "0")
+    chartSpace
+      .selectAll(".aboutText")
       .transition()
-      .duration(headerDuration)
-      .style("opacity", "1");
-
-    legendText
-      .append("p")
-      .text("Here's where we'll explain how to understand the viz.")
-      .style("opacity", "0")
-      .transition()
-      .duration(textDuration)
-      .style("opacity", "1");
+      .style("opacity", "0");
   }
 
   function about() {
-    let aboutText = d3
-      .selectAll("#aboutGroup")
-      .append("g")
-      .attr("id", "aboutText")
-      .style("transform", `translate(0,${windowHeight / 2}px)`);
-
-    aboutText
-      .append("h1")
-      .text("About our Team")
-      .style("opacity", "0")
+    chartSpace
+      .selectAll(".welcomeText")
       .transition()
-      .duration(headerDuration)
-      .style("opacity", "1");
-
-    aboutText
-      .append("p")
-      .text("Here's where we'll brag on ourselves a little bit (or a lot!).")
-      .style("opacity", "0")
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".mthdText")
       .transition()
-      .duration(textDuration)
+      .style("opacity", "0");
+    chartSpace
+      .selectAll(".aboutText")
+      .transition()
       .style("opacity", "1");
   }
 
@@ -186,23 +312,18 @@
     // response = { element, direction, index }
     switch (response.index) {
       case 0: // welcome
-        console.log("welcome");
+        activelink("homelnk");
         welcome();
-        break; // methodology
-      case 1:
-        console.log("methodology");
-        methodology();
-        break; // legend
-      case 2:
-        console.log("legend");
-        legend();
-        break; // universe viz
-      case 3:
-        console.log("universe");
-
         break;
-      case 4:
-        console.log("about");
+      case 1: // methodology
+        activelink("mthdlnk");
+        methodology();
+        break;
+      case 2: // bubbles viz
+        activelink("xplrlnk");
+        break;
+      case 3:
+        activelink("abtlnk");
         about();
         break;
     }

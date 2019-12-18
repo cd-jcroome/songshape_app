@@ -1,0 +1,134 @@
+/* selector reference: https://www.w3schools.com/cssref/css_selectors.asp */
+
+a {
+  color: #eee;
+}
+
+body {
+  height: 100%;
+  background-color: #222;
+  color: #eee;
+  font-family: "Roboto";
+}
+
+.masthead {
+  margin-bottom: 2rem;
+  top: 0px;
+  position: fixed;
+  width: 95vw;
+  font-family: "Pacifico";
+  background-color: #222;
+  z-index: 100000;
+}
+
+@media (min-width: 48em) {
+  .masthead-brand {
+    float: left;
+  }
+  .nav-masthead {
+    float: right;
+  }
+}
+
+/* #my-media {
+  width: 100%;
+  height: auto;
+  margin-left: 30px;
+} */
+
+.flex-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.flex-container-alt {
+  display: flex;
+  justify-content: left;
+  margin-top: 10vh;
+}
+
+#song-label{
+    width:8%;
+}
+
+#song-content{
+    width:30%;
+}
+
+#artist-label{
+    width:4%;
+}
+
+#artist-content{
+    width:20%;
+}
+
+#time-elapsed-label{
+    width:11%;
+}
+
+#time-elapsed{
+    width:5%;
+}
+
+.bubu-button {
+  background-color: #1DB954;
+  border: none;
+  color: #eee;
+  font-family: "Roboto";
+  padding: 7px 30px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1.5vw;
+}
+
+.bubu-button:disabled {
+  background-color: #ff8888;
+}
+
+div * {
+  margin: 1vh;
+}
+
+#plot-div {
+  width: 900px;
+  margin-left:70px;
+}
+
+#legend-div {
+  width: 15%;
+  padding-left: 70px;
+}
+
+#controller-div {
+  margin-top: 80px;
+  width: 95vw;
+  height: 100%;
+  text-align: left;
+  margin-left: 10px;
+}
+
+table {
+  border-collapse: collapse;
+  font-family: "Roboto";
+}
+
+#buttonDiv {
+    margin-left:40px;
+}
+
+.myXAxis line {
+  stroke: none;
+  fill: none;
+}
+
+.myXAxis path {
+  stroke: none;
+  fill: none;
+}
+
+.myXAxis text {
+  display: none;
+}
+
