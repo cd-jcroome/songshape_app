@@ -7,6 +7,7 @@ The goal of our project is to translate the auditory power of music into a visua
 
 * Explore the app: https://audioforma.herokuapp.com
 * View our screencast: https://www.youtube.com/watch?v=-AG25gbI51c&feature=youtu.be
+* Learn about our design process by scrolling through process_book.pdf in the root folder
 
 ### About the Repo
 The code for our web app lives in the songshape_app repo. 
