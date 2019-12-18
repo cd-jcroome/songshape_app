@@ -51,18 +51,27 @@
       .append("h2")
       .attr("class", "welcomeText")
       .text("What is the Shape of a Song?")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      // .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .style("opacity", "0");
     welcomeText
       .append("p")
+      .attr("class", "welcomeText")
       .text(
         "That's the riddle we set out to answer with this project. This site is our attempt to share what we found with you."
       );
-    welcomeText.append("p").text("Scroll down to begin.");
 
     welcomeText
-      .selectAll("p")
+      .append('div')
       .attr("class", "welcomeText")
+      .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/-AG25gbI51c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
+      // .style("transform", `translate(0px,${stepHeight / 2}px)`)
+    
+    welcomeText.append("p")
+      .attr("class", "welcomeText")
+      .text("Scroll down to begin.");
+
+    welcomeText
+      .selectAll(".welcomeText")
       .style("transform", `translate(0px,${stepHeight / 2}px)`)
       .style("opacity", "0");
 

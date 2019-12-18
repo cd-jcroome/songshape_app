@@ -220,12 +220,11 @@ def load_songdata(spotify_id):
 
         sample_30s = urlopen(song_url)
 
-        output = open(f'./static/data/{spotify_id}.mp3','wb')
-        output.write(sample_30s.read())
-        
-
         mp3_filepath = os.path.join(os.path.dirname(
             __file__), f'static/data/{spotify_id}.mp3')
+        output = open(f'{mp3_filepath}','wb')
+
+        output.write(sample_30s.read())
 
         print(mp3_filepath)
 
