@@ -64,16 +64,12 @@ db.init_app(app)
 @app.route('/')
 @app.route('/index')
 def authenticate():
-    if 'oauth_key' in session:
-        return redirect(url_for('landing'))
-    else:
-        print(f'no oauth key, redirect URI is {redirect_uri}')
-        spotify = OAuth2Session(
-            spotify_key, redirect_uri=redirect_uri, scope=scopes)
-        authorization_url, state = spotify.authorization_url(spotify_auth_url)
-        # State is used to prevent CSRF, keep this for later.
-        session['oauth_state'] = state
-        return redirect(authorization_url)
+    spotify = OAuth2Session(
+        spotify_key, redirect_uri=redirect_uri, scope=scopes)
+    authorization_url, state = spotify.authorization_url(spotify_auth_url)
+    # State is used to prevent CSRF, keep this for later.
+    session['oauth_state'] = state
+    return redirect(authorization_url)
 
 # callback route, for receiving users after they are authenticated
 @app.route('/callback/', methods=['GET'])
@@ -128,8 +124,6 @@ def detail(spotify_id):
 # load_metadata route (for universe vis)
 @app.route('/load_metadata', methods=['GET', 'POST'])
 def load_metadata():
-    time.sleep(2)
-
     access_token = session['oauth_token']
     authorization_header = {"Authorization": "Bearer {}".format(access_token)}
 
