@@ -11,6 +11,7 @@ import json
 import os
 import socket
 import string
+import time
 from urllib.parse import quote
 from urllib.request import urlopen
 from requests_oauthlib import OAuth2Session
@@ -127,6 +128,7 @@ def detail(spotify_id):
 # load_metadata route (for universe vis)
 @app.route('/load_metadata', methods=['GET', 'POST'])
 def load_metadata():
+    time.sleep(2)
 
     access_token = session['oauth_token']
     authorization_header = {"Authorization": "Bearer {}".format(access_token)}
@@ -223,7 +225,7 @@ def load_songdata(spotify_id):
 
         mp3_filepath = os.path.join(os.path.dirname(
             __file__), f'static/data/{spotify_id}.mp3')
-        output = open(f'{mp3_filepath}','wb')
+        output = open(f'{mp3_filepath}', 'wb')
 
         output.write(sample_30s.read())
 
@@ -242,7 +244,7 @@ def load_songdata(spotify_id):
         time_int = duration / cqt_h.shape[1]
         c_df_h['note_time'] = c_df_h['note_time'] * time_int * 1000
 
-        c_df_h_final = c_df_h[c_df_h['magnitude'].astype(float)>=.01]
+        c_df_h_final = c_df_h[c_df_h['magnitude'].astype(float) >= .01]
 
         song_data = c_df_h_final.to_csv(index=False)
 
