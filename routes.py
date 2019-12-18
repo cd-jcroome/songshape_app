@@ -97,7 +97,7 @@ def callback():
 # landing space, after authentication
 @app.route('/landing')
 def landing():
-    access_token = session['oauth_token']
+    # access_token = session['oauth_token']
     return render_template('landing.html', title='AudioForma')
 
 # detail route
