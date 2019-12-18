@@ -59,13 +59,11 @@ spotify_artists_url = 'https://api.spotify.com/v1/artists/'
 heroku = Heroku(app)
 db.init_app(app)
 
-# index route
-@app.route('/login')
+# authenticate route
 @app.route('/')
 def authenticate():
     if 'oauth_key' in session:
-        print(session)
-        return redirect(url_for('index'))
+        return redirect(url_for('landing'))
     else:
         print(f'no oauth key, redirect URI is {redirect_uri}')
         spotify = OAuth2Session(
@@ -74,11 +72,6 @@ def authenticate():
         # State is used to prevent CSRF, keep this for later.
         session['oauth_state'] = state
         return redirect(authorization_url)
-
-
-@app.route('/index')
-def index():
-    return render_template('index.html', title='AudioForma')
 
 # callback route, for receiving users after they are authenticated
 @app.route('/callback/', methods=['GET'])
@@ -101,7 +94,13 @@ def callback():
 
     session['oauth_token'] = access_token
 
-    return redirect(url_for('index'))
+    return redirect(url_for('landing'))
+
+# landing space, after authentication
+@app.route('/landing')
+def landing():
+    access_token = session['oauth_token']
+    return render_template('landing.html', title='AudioForma')
 
 # detail route
 @app.route('/detail/<spotify_id>')
@@ -127,6 +126,7 @@ def detail(spotify_id):
 # load_metadata route (for universe vis)
 @app.route('/load_metadata', methods=['GET', 'POST'])
 def load_metadata():
+
     access_token = session['oauth_token']
     authorization_header = {"Authorization": "Bearer {}".format(access_token)}
 
@@ -242,7 +242,9 @@ def load_songdata(spotify_id):
         time_int = duration / cqt_h.shape[1]
         c_df_h['note_time'] = c_df_h['note_time'] * time_int * 1000
 
-        song_data = c_df_h.to_csv(index=False)
+        c_df_h_final = c_df_h[c_df_h['magnitude'].astype(float)>=.01]
+
+        song_data = c_df_h_final.to_csv(index=False)
 
     else:
         song_data = jsonify(track_info)
