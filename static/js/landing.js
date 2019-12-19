@@ -23,7 +23,7 @@
       bottom: windowHeight * 0.05,
       left: windowWidth * 0.05
     };
-    stepHeight = windowHeight * 0.95;
+    stepHeight = windowHeight * 0.75;
     stepWidth = windowWidth * 0.95;
 
     chartSpace
@@ -61,18 +61,21 @@
       );
 
     welcomeText
-      .append('div')
+      .append("div")
       .attr("class", "welcomeText")
-      .html('<iframe width="560" height="315" src="https://www.youtube.com/embed/-AG25gbI51c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
-      // .style("transform", `translate(0px,${stepHeight / 2}px)`)
-    
-    welcomeText.append("p")
+      .html(
+        '<iframe width="560" height="315" src="https://www.youtube.com/embed/-AG25gbI51c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+      )
+      .style("transform", `translate(${stepWidth / 3}px,0px)`);
+
+    welcomeText
+      .append("p")
       .attr("class", "welcomeText")
       .text("Scroll down to begin.");
 
     welcomeText
       .selectAll(".welcomeText")
-      .style("transform", `translate(0px,${stepHeight / 2}px)`)
+      .style("transform", `translate(0px,${stepHeight / 4}px)`)
       .style("opacity", "0");
 
     // Methodology-----------------------------------------------------
@@ -129,8 +132,17 @@
       .attr("class", "step")
       .attr("data-step", "d")
       .attr("height", `${stepHeight}`)
-      .attr("width", `${stepWidth}`)
-      // add browse-by selctor
+      .attr("width", `${stepWidth}`);
+
+    let bblsText = d3.selectAll("#bubblesGroup").append("g");
+
+    bblsText
+      .append("h2")
+      .text("Explore Your Spotify Library")
+      // .style("transform", `translate(0px,${stepHeight / 8}px)`)
+      .attr("class", "bblsText");
+    // add browse-by selctor
+    bblsText
       .append("div")
       .attr("class", "form-group")
       .style("width", "30vw")

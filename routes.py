@@ -124,7 +124,7 @@ def detail(spotify_id):
 # load_metadata route (for universe vis)
 @app.route('/load_metadata', methods=['GET', 'POST'])
 def load_metadata():
-    access_token = session['oauth_token']
+    access_token = session.get('oauth_token')
     authorization_header = {"Authorization": "Bearer {}".format(access_token)}
 
     limit = 50
