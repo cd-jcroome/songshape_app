@@ -220,17 +220,14 @@ def load_songdata(spotify_id):
     if track_info['preview_url']:
         preview_url = track_info['preview_url']
         song_url = str(track_info['preview_url'].split('?')[0])+'.mp3'
-
         sample_30s = urlopen(song_url)
 
-
+    # write mp3 file to local storage
         output = open(f'/static/data/{spotify_id}.mp3','wb')
-
         output.write(sample_30s.read())
 
+    # process audio
         mp3_filepath = url_for('static', filename=f'data/{spotify_id}.mp3')
-        print(mp3_filepath)
-
         y, sr = librosa.load(mp3_filepath)
         duration = librosa.core.get_duration(y=y, sr=sr)
         # split out the harmonic and percussive audio
