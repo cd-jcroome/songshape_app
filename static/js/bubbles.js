@@ -445,7 +445,7 @@
 
             this.clickThrough = true;
           } else if (browseType == "song") {
-            window.location = `https://open.spotify.com/track/${d["key"].split("_")[0]}`;
+            window.location = `/detail/${d["key"].split("_")[0]}`;
           }
         });
 

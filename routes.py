@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 
 app.secret_key = os.urandom(24)
 
@@ -61,6 +61,10 @@ db.init_app(app)
 
 # authenticate route
 @app.route('/')
+def login():
+    return render_template('login.html')
+
+@app.route('/authenticate')
 def authenticate():
     if 'oauth_key' in session:
         return redirect(url_for('landing'))
@@ -215,17 +219,16 @@ def load_songdata(spotify_id):
         spotify_tracks_url+spotify_id, headers=auth_header).json()
     if track_info['preview_url']:
         preview_url = track_info['preview_url']
-        song_url = os.path.join(track_info['preview_url'].split('?')[
-                                0], '.mp3').replace('/.mp3', '.mp3')
+        song_url = str(track_info['preview_url'].split('?')[0])+'.mp3'
 
         sample_30s = urlopen(song_url)
 
-        mp3_filepath = os.path.join(os.path.dirname(
-            __file__), f'static/data/{spotify_id}.mp3')
-        output = open(f'{mp3_filepath}','wb')
+
+        output = open(f'/static/data/{spotify_id}.mp3','wb')
 
         output.write(sample_30s.read())
 
+        mp3_filepath = url_for('static', filename=f'data/{spotify_id}.mp3')
         print(mp3_filepath)
 
         y, sr = librosa.load(mp3_filepath)

@@ -1,0 +1,29 @@
+{% extends "layout.html" %} {% block content %}
+<header class="masthead mb-auto">
+  <div class="inner">
+    <h1 class="masthead-brand">AudioForma</h1>
+    <nav class="nav nav-masthead justify-content-center">
+      <a class="nav-link active" id="homelnk" href="#welcome">Home</a>
+      <a class="nav-link" id="mthdlnk" href="#methodology">Methodology</a>
+      <a class="nav-link" id="xplrlnk" href="#bubbles">Explore</a>
+      <a class="nav-link" id="abtlnk" href="#about">About</a>
+    </nav>
+  </div>
+</header>
+<body>
+  <h1>Connect to Spotify</h1>
+  <p>
+    We connect to spotify to customize your experience and visualize your
+    library
+  </p>
+  <a href="/landing">No Thanks</button>
+  <a href="/authenticate">Connect to Spotify</button>
+</body>
+<footer>
+  <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+  <script src="https://unpkg.com/scrollama@2.1.3/build/scrollama.js"></script>
+  <script src="https://russellgoldenberg.github.io/scrollama/stickyfill.min.js"></script>
+  <script src="../static/js/landing.js"></script>
+  <script src="../static/js/bubbles.js"></script>
+</footer>
+{% endblock %}
