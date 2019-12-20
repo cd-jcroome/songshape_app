@@ -38,6 +38,7 @@ SQLAlchemy = "==1.3.11"
 Werkzeug = "==0.16.0"
 psycopg2-binary = "*"
 requests-oauthlib = "*"
+pydub = "*"
 
 [requires]
 python_version = "3.7"
