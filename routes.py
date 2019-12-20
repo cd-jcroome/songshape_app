@@ -36,7 +36,7 @@ if socket.gethostname() in ["iMac", "APJ2HV2R68BAFD", "LAPTOP-RP2K2BF3"]:
 else:
     spotify_key = os.environ['spotify_key']
     spotify_secret_key = os.environ['spotify_secret_key']
-    redirect_uri = "https://audioforma.herokuapp.com/callback/"
+    redirect_uri = "https://dev-audioforma.herokuapp.com/callback/"
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://eeisesngobgpmw:022a760c5e2a14fb950fc580e699168d321a7c5ee2e6a23bf6a63e7857ad09f1@ec2-54-225-173-42.compute-1.amazonaws.com:5432/dbdslcdkv11cgu'
 
 
